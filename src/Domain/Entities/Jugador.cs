@@ -6,7 +6,14 @@ using System.Threading.Tasks;
 
 namespace Domain.Entities
 {
-    internal class Class1
+    public class Jugador
     {
+        public int Partidos { get; set; }
+        public string Descripcion { get; set; }
+        public string PiernaHabil {  get; set; }
+        public string Posicion { get; set; }
+        public string Equipo { get; set; }
+        public string Rol {  get; set; }
+
     }
 }
