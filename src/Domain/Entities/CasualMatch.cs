@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Domain.Entities
 {
-    internal class Casual
+    public class CasualMatch : Match
     {
-        public string Admin {  get; set; }
-        public string Codigo {  get; set; }
+        public Player Admin {  get; set; }
+        public string JoinCode {  get; set; }
     }
 }

@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Domain.Entities
 {
-    internal class Competitivo
+    public class CompetitiveMatch: Match
     {
-        public string Liga { get; set; }
-        public string Resultado { get; set; }
+        public League League { get; set; }
+        public string Result { get; set; }
     }
 }
