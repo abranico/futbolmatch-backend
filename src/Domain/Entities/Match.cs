@@ -15,6 +15,5 @@ namespace Domain.Entities
         public DateTime Schedule { get; set; }
         public MatchFormat MatchFormat { get; set; }
         public MatchMode MatchMode { get; set; }
-        public ICollection<Team> Teams { get; set; } = new List<Team>();
     }
 }

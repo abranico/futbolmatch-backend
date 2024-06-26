@@ -12,10 +12,9 @@ namespace Domain.Entities
         
         public string? Description { get; set; }
         public PreferredFoot? PreferredFoot {  get; set; }
-        public Position Position { get; set; }
+        public Position? Position { get; set; }
+        public ICollection<Team> Teams { get; set; } = new List<Team>();
         public Role Role { get; set; } = Role.Player;
-        public Team? Team { get; set; }
-        public ICollection<Match> MatchHistory { get; set; } = new List<Match>();
 
     }
 }

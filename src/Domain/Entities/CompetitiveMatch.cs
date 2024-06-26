@@ -10,5 +10,7 @@ namespace Domain.Entities
     {
         public League League { get; set; }
         public string Result { get; set; }
+        public Team HomeTeam { get; set; }
+        public Team AwayTeam { get; set; }
     }
 }

@@ -18,16 +18,10 @@ namespace Domain.Entities
         public Player Admin { get; set; }
         public Visibility Visibility { get; set; }
         public MatchFormat MatchFormat { get; set; }
-        public ICollection<CompetitiveMatch> MatchHistory { get; set; } = new List<CompetitiveMatch>();
-        public ICollection<Team> Teams { get; set; } = new List<Team>();
-        public ICollection<Player> Players { get; set; } = new List<Player>();
-        public ICollection<Team> InvitedTeams { get; set; } = new List<Team>();
-        public ICollection<Team> LeagueJoinRequests { get; set; } = new List<Team>();
         public LeagueStatus LeagueStatus { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime? EndDate { get; set; }
-        public List<Tuple<Team, Team>>? Fixture { get; set; }
-        public Team Winner { get; set; }
+ 
 
     }
 }
