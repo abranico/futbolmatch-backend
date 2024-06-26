@@ -8,11 +8,10 @@
 
   <ItemGroup>
     <Folder Include="Interfaces\" />
-    <Folder Include="Models\Requests\" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Domain\Domain.csproj" />
+    <ProjectReference Include="..\Domain\Domain.csproj" />
   </ItemGroup>
 
 </Project>
