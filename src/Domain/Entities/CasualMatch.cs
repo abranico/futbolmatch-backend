@@ -12,3 +12,7 @@ namespace Domain.Entities
         public string JoinCode {  get; set; }
     }
 }
+
+
+
+
