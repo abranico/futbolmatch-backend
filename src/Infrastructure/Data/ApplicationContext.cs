@@ -1,5 +1,7 @@
 ﻿using Domain.Entities;
+using Domain.Enums;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,6 +39,11 @@ namespace Infrastructure.Data
            .HasOne(t => t.Captain)
            .WithMany()
            .HasForeignKey(t => t.CaptainId);
+
+            modelBuilder
+                .Entity<User>()
+                .Property(d => d.Gender)
+                .HasConversion(new EnumToStringConverter<Gender>());
 
         }
     }

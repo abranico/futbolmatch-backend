@@ -73,7 +73,7 @@ builder.Services.AddAuthentication("Bearer")
 #region Repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
-
+builder.Services.AddScoped<ICasualMatchRepository, CasualMatchRepository>();
 #endregion
 
 #region Services
@@ -81,6 +81,7 @@ builder.Services.Configure<AutenticacionServiceOptions>(
     builder.Configuration.GetSection(AutenticacionServiceOptions.AutenticacionService));
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 builder.Services.AddScoped<IPlayerService, PlayerService>();
+builder.Services.AddScoped<ICasualMatchService, CasualMatchService>();
 #endregion
 
 var app = builder.Build();
