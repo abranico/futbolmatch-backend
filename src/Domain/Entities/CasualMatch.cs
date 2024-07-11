@@ -8,7 +8,7 @@ namespace Domain.Entities
 {
     public class CasualMatch : Match
     {
-        public Player Admin {  get; set; }
+        public int Admin {  get; set; }
         public string JoinCode {  get; set; }
     }
 }

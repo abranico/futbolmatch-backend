@@ -7,8 +7,7 @@ using System.Threading.Tasks;
 
 namespace Domain.Interfaces
 {
-    public interface IUserRepository : IRepositoryBase<User>
+    public interface ICasualMatchRepository : IRepositoryBase<CasualMatch>
     {
-        public User? GetUserByEmail(string email);
     }
 }
