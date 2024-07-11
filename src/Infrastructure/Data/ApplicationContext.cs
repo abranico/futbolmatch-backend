@@ -42,6 +42,11 @@ namespace Infrastructure.Data
                 .Property(d => d.Gender)
                 .HasConversion(new EnumToStringConverter<Gender>());
 
+            modelBuilder
+                .Entity<User>()
+                .Property(d => d.Gender)
+                .HasConversion(new EnumToStringConverter<Gender>());
+
         }
     }
 }
