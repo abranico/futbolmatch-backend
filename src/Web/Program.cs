@@ -74,10 +74,8 @@ builder.Services.AddAuthentication("Bearer")
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
 builder.Services.AddScoped<ICasualMatchRepository, CasualMatchRepository>();
-<<<<<<< HEAD
 builder.Services.AddScoped<ITeamRepository, TeamRepository>();
-=======
->>>>>>> 0dc185e19a5ca63519749cb70c84a710494c2ee5
+builder.Services.AddScoped<ILeagueRepository, LeagueRepository>();
 #endregion
 
 #region Services
@@ -86,10 +84,8 @@ builder.Services.Configure<AutenticacionServiceOptions>(
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 builder.Services.AddScoped<IPlayerService, PlayerService>();
 builder.Services.AddScoped<ICasualMatchService, CasualMatchService>();
-<<<<<<< HEAD
 builder.Services.AddScoped<ITeamService, TeamService>();
-=======
->>>>>>> 0dc185e19a5ca63519749cb70c84a710494c2ee5
+builder.Services.AddScoped<ILeagueService, LeagueService>();
 #endregion
 
 var app = builder.Build();
