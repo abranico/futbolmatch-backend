@@ -15,9 +15,11 @@ namespace Application.Services
     public class TeamService : ITeamService
     {
         private readonly ITeamRepository _teamRepository;
-        public TeamService(ITeamRepository teamRepository)
+        private readonly ILeagueRepository _leagueRepository;
+        public TeamService(ITeamRepository teamRepository, ILeagueRepository leagueRepository)
         {
             _teamRepository = teamRepository;
+            _leagueRepository = leagueRepository;
         }
         public List<Team> GetAll()
         {
@@ -56,6 +58,19 @@ namespace Application.Services
         {
             var team = _teamRepository.GetById(id) ?? throw new NotFoundException($"Team {id} not found");
             _teamRepository.Delete(team);
+        }
+
+        public void JoinLeague(int id, string code)
+        {
+            Team team = _teamRepository.GetById(id) ?? throw new NotFoundException($"Team {id} not found");
+
+            List<League> leagues = _leagueRepository.GetAll();
+
+            League league = leagues.FirstOrDefault(x => x.JoinCode == code) ?? throw new NotFoundException($"Code {code} is not valid");
+
+            team.LeagueId = league.Id;
+
+            _teamRepository.Update(team);
         }
     }
 }

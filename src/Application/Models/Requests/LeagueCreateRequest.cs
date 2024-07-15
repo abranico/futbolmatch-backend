@@ -12,7 +12,6 @@ namespace Application.Models.Requests
         public string Name { get; set; }
         public string? Description { get; set; }
         public string? Logo { get; set; }        
-        public bool Private { get; set; }
         public MatchFormat MatchFormat { get; set; }
     }
 }

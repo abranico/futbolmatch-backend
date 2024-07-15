@@ -15,5 +15,6 @@ namespace Application.Interfaces
         Team Create(TeamCreateRequest request, Player player);
         void Update(int id, TeamUpdateRequest request);
         void Delete(int id);
+        void JoinLeague(int id, string code);
     }
 }
