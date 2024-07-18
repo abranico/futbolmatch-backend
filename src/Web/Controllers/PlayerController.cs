@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Domain.Exceptions;
 using Application.Models.Requests;
 using Application.Interfaces;
+using Application.Services;
 
 namespace Web.Controllers
 {
@@ -34,6 +35,7 @@ namespace Web.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
 
         [HttpPost]
         public IActionResult Create([FromBody] PlayerCreateRequest request)
@@ -70,5 +72,7 @@ namespace Web.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        
     }
 }

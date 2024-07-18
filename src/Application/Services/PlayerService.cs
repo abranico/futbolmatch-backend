@@ -76,5 +76,7 @@ namespace Application.Services
             _playerRepository.Delete(player);
         }
 
+        
+
     }
 }

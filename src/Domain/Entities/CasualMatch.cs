@@ -10,6 +10,8 @@ namespace Domain.Entities
     {
         public int Admin {  get; set; }
         public string JoinCode {  get; set; }
+        public List<string> Players { get; set; } = new List<string>();
+        public bool Open { get; set; } = true;
     }
 }
 

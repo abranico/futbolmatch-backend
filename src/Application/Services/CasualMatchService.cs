@@ -25,9 +25,9 @@ namespace Application.Services
             return _casualMatchRepository.GetAll();
         }
 
-        public CasualMatch? GetById(int id)
+        public CasualMatch? GetByJoinCode(string code)
         {
-            var match = _casualMatchRepository.GetById(id) ?? throw new NotFoundException($"Match {id} not found");
+            var match = _casualMatchRepository.GetByJoinCode(code) ?? throw new NotFoundException($"Code {code} not found");
             return match;
         }
 
@@ -41,6 +41,7 @@ namespace Application.Services
             match.Schedule = request.Schedule;
             match.MatchFormat = request.MatchFormat;
             match.MatchMode = MatchMode.Casual;
+            match.Players.Add(player.Username);
 
             return _casualMatchRepository.Create(match);
         }
@@ -63,6 +64,45 @@ namespace Application.Services
             }
 
             return new string(code);
+        }
+
+        public void Join(string username, string code)
+        {
+            var match = _casualMatchRepository.GetByJoinCode(code) ?? throw new NotFoundException($"Code {code} not found");
+            
+            if(match.Players.Contains(username))
+                throw new InvalidOperationException($"{username} ya se encuentra en el partido");
+
+            var format = match.MatchFormat;
+
+            if (format == MatchFormat.Futbol5)
+            {
+                if (match.Players.Count >= 10)
+                {
+                    match.Open = false;
+                    throw new InvalidOperationException("No se pueden agregar más de 10 jugadores a un partido de Futbol 5.");
+                }
+
+            }
+            else if (format == MatchFormat.Futbol7)
+            {
+                if (match.Players.Count >= 14) 
+                { 
+                    match.Open = false;
+                    throw new InvalidOperationException("No se pueden agregar más de 14 jugadores a un partido de Futbol 7.");
+                } 
+            }
+            else
+            {
+                if (match.Players.Count >= 22)
+                {
+                    match.Open = false;
+                    throw new InvalidOperationException("No se pueden agregar más de 22 jugadores a un partido de Futbol 11.");
+                }
+            }
+
+            match.Players.Add(username);
+            _casualMatchRepository.Update(match);
         }
     }
 }

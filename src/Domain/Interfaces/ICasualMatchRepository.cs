@@ -9,5 +9,6 @@ namespace Domain.Interfaces
 {
     public interface ICasualMatchRepository : IRepositoryBase<CasualMatch>
     {
+        CasualMatch? GetByJoinCode(string code);
     }
 }

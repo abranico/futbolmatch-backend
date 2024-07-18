@@ -15,5 +15,6 @@ namespace Application.Interfaces
         Player Create(PlayerCreateRequest request);
         void Update(int id, PlayerUpdateRequest request);
         void Delete(int id);
+        
     }
 }

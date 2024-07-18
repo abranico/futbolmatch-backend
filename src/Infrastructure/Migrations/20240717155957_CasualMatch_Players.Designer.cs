@@ -3,6 +3,7 @@ using System;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20240717155957_CasualMatch_Players")]
+    partial class CasualMatch_Players
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.6");
@@ -218,13 +221,6 @@ namespace Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<bool>("Open")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Players")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.HasDiscriminator().HasValue("CasualMatch");
                 });
 
@@ -258,6 +254,9 @@ namespace Infrastructure.Migrations
                 {
                     b.HasBaseType("Domain.Entities.User");
 
+                    b.Property<int?>("CasualMatchId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Description")
                         .HasColumnType("TEXT");
 
@@ -269,6 +268,8 @@ namespace Infrastructure.Migrations
 
                     b.Property<int>("Role")
                         .HasColumnType("INTEGER");
+
+                    b.HasIndex("CasualMatchId");
 
                     b.HasDiscriminator().HasValue("Player");
                 });
@@ -313,6 +314,18 @@ namespace Infrastructure.Migrations
                     b.Navigation("HomeTeam");
 
                     b.Navigation("League");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Player", b =>
+                {
+                    b.HasOne("Domain.Entities.CasualMatch", null)
+                        .WithMany("Players")
+                        .HasForeignKey("CasualMatchId");
+                });
+
+            modelBuilder.Entity("Domain.Entities.CasualMatch", b =>
+                {
+                    b.Navigation("Players");
                 });
 #pragma warning restore 612, 618
         }

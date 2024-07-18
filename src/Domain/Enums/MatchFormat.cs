@@ -8,8 +8,8 @@ namespace Domain.Enums
 {
     public enum MatchFormat
     {
-        Futbol11,
+        Futbol5,
         Futbol7,
-        Futbol5
+        Futbol11,
     }
 }
