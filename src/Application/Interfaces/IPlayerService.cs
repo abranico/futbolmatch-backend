@@ -12,6 +12,7 @@ namespace Application.Interfaces
     {
         List<Player> GetAll();
         Player? GetById(int id);
+        Player? GetByUsername(string username);
         Player Create(PlayerCreateRequest request);
         void Update(int id, PlayerUpdateRequest request);
         void Delete(int id);

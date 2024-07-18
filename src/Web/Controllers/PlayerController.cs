@@ -23,7 +23,7 @@ namespace Web.Controllers
             return Ok(_playerService.GetAll());
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("id/{id}")]
         public IActionResult GetById(int id)
         {
             try
@@ -31,6 +31,20 @@ namespace Web.Controllers
                 return Ok(_playerService.GetById(id));
 
             } catch (NotFoundException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("username/{username}")]
+        public IActionResult GetByUsername(string username)
+        {
+            try
+            {
+                return Ok(_playerService.GetByUsername(username));
+
+            }
+            catch (NotFoundException ex)
             {
                 return BadRequest(ex.Message);
             }

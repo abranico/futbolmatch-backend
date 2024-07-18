@@ -16,5 +16,6 @@ namespace Application.Interfaces
         void Delete(int id);
         string GenerateRandomCode(int length);
         void Join(string username, string code);
+        void Leave(Player player, string username, string code);
     }
 }

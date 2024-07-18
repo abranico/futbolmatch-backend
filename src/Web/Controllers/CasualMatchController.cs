@@ -76,7 +76,24 @@ namespace Web.Controllers
                 string username = User.Claims.FirstOrDefault(c => c.Type == "username")?.Value;
                 _casualMatchService.Join(username, code);
                 return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
+        [HttpPost("[action]")]
+        public IActionResult Leave([FromBody] CasualMatchLeaveRequest casualMatchLeaveRequest)
+        {
+            string username = casualMatchLeaveRequest.Username;
+            string code = casualMatchLeaveRequest.Code;
+            try
+            {
+                int userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "");
+                Player? player = _playerService.GetById(userId);
+                _casualMatchService.Leave(player, username, code);
+                return NoContent();
             }
             catch (Exception ex)
             {

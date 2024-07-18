@@ -10,5 +10,6 @@ namespace Domain.Interfaces
     public interface IPlayerRepository : IRepositoryBase<Player>
     {
         public Player? GetByEmail(string email);
+        public Player? GetByUsername(string username);
     }
 }

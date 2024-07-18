@@ -10,15 +10,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace Application.Services
 {
     public class CasualMatchService : ICasualMatchService
     {
         private readonly ICasualMatchRepository _casualMatchRepository;
+        private readonly IPlayerRepository _playerRepository;
 
-        public CasualMatchService(ICasualMatchRepository casualMatchRepository)
+        public CasualMatchService(ICasualMatchRepository casualMatchRepository, IPlayerRepository playerRepository)
         {
             _casualMatchRepository = casualMatchRepository;
+            _playerRepository = playerRepository;
         }
         public List<CasualMatch> GetAll()
         {
@@ -35,7 +38,7 @@ namespace Application.Services
         {
             CasualMatch match = new CasualMatch();
             match.Admin = player.Id;
-            match.JoinCode = GenerateRandomCode(8);
+            match.JoinCode = GenerateRandomCode(18);
             match.Country = player.Country;
             match.City = player.City;
             match.Schedule = request.Schedule;
@@ -103,6 +106,27 @@ namespace Application.Services
 
             match.Players.Add(username);
             _casualMatchRepository.Update(match);
+        }
+
+        public void Leave(Player player, string username, string code)
+        {
+            var match = _casualMatchRepository.GetByJoinCode(code) ?? throw new NotFoundException($"Code {code} not found");
+
+            if (!match.Players.Contains(username))
+                throw new InvalidOperationException($"{username} no se encuentra en el partido");
+
+            if (player.Id == match.Admin && username == player.Username)
+            {
+                Delete(match.Id);
+                return;
+            }
+
+            if (username != player.Username && player.Id != match.Admin)
+                throw new InvalidOperationException($"No puedes borrar a este usuario");
+
+            match.Players.Remove(username);
+            _casualMatchRepository.Update(match);
+
         }
     }
 }
