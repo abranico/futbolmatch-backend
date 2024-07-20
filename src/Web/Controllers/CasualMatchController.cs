@@ -29,6 +29,12 @@ namespace Web.Controllers
             return Ok(_casualMatchService.GetAll());
         }
 
+        [HttpGet("availables")]
+        public IActionResult GetAllAvailables()
+        {
+            return Ok(_casualMatchService.GetAll().Where(match => match.Open == true));
+        }
+
         [HttpGet("{code}")]
         public IActionResult GetByJoinCode(string code)
         {
