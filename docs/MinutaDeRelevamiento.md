@@ -85,6 +85,4 @@ Los equipos contarán con un historial de partidos. Cualquier usuario puede acce
 al historial de un equipo. El historial de partidos comparte detalles de cada partido
 como el resultado, equipo rival y comentarios del partido
 
-- Comentarios en partidos:
-Cada partido brindará a los jugadores la opción de dejar comentarios para compartir
-la experiencia.
+
