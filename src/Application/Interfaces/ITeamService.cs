@@ -13,8 +13,8 @@ namespace Application.Interfaces
         List<Team> GetAll();
         Team? GetById(int id);
         Team Create(TeamCreateRequest request, Player player);
-        void Update(int id, TeamUpdateRequest request);
-        void Delete(int id);
-        void JoinLeague(int id, string code);
+        void Update(int id, TeamUpdateRequest request, int userId);
+        void Delete(int id, int userId);
+        void JoinLeague(int id, string code, int userId);
     }
 }

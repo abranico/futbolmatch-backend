@@ -48,14 +48,16 @@ namespace Application.Services
             player.City = request.City;
             player.DateOfBirth = request.DateOfBirth;
             player.Gender = request.Gender;
+            player.Role = request.Role;
 
             return _playerRepository.Create(player);
 
         }
 
-        public void Update(int id, PlayerUpdateRequest request)
+        public void Update(int id, PlayerUpdateRequest request, int userId)
         {
             var player = _playerRepository.GetById(id) ?? throw new NotFoundException($"Player {id} not found");
+            if(player.Id != userId) throw new InvalidOperationException("Acceso denegado.");
 
             player.Email = request.Email ?? player.Email;
             player.Username = request.Username ?? player.Username;
@@ -69,15 +71,15 @@ namespace Application.Services
             player.Description = request.Description ?? player.Description;
             player.PreferredFoot = request.PreferredFoot ?? player.PreferredFoot;
             player.Position = request.Position ?? player.Position;
-            player.Role = request.Role ?? player.Role;
 
             _playerRepository.Update(player);
 
         }
 
-        public void Delete(int id)
+        public void Delete(int id, int userId)
         {
             var player = _playerRepository.GetById(id) ?? throw new NotFoundException($"Player {id} not found");
+            if (player.Id != userId) throw new InvalidOperationException("Acceso denegado.");
             _playerRepository.Delete(player);
         }
 

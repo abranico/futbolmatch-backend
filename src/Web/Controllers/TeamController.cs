@@ -59,7 +59,8 @@ namespace Web.Controllers
         {
             try
             {
-                _teamService.Update(id, request);
+                int userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "");
+                _teamService.Update(id, request, userId);
                 return NoContent();
 
             }
@@ -74,7 +75,8 @@ namespace Web.Controllers
         {
             try
             {
-                _teamService.Delete(id);
+                int userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "");
+                _teamService.Delete(id, userId);
                 return NoContent();
 
             }
@@ -89,7 +91,8 @@ namespace Web.Controllers
         {
             try
             {
-                _teamService.JoinLeague(id, code);
+                int userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "");
+                _teamService.JoinLeague(id, code, userId);
                 return NoContent();
 
             }

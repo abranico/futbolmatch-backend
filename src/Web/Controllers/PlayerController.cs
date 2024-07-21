@@ -4,6 +4,7 @@ using Domain.Exceptions;
 using Application.Models.Requests;
 using Application.Interfaces;
 using Application.Services;
+using System.Security.Claims;
 
 namespace Web.Controllers
 {
@@ -63,7 +64,8 @@ namespace Web.Controllers
         {
             try
             {
-                _playerService.Update(id, request);
+                int userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "");
+                _playerService.Update(id, request, userId);
                 return NoContent();
 
             } catch (NotFoundException ex)
@@ -77,7 +79,8 @@ namespace Web.Controllers
         {
             try
             {
-                _playerService.Delete(id);
+                int userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "");
+                _playerService.Delete(id, userId);
                 return NoContent();
 
             }

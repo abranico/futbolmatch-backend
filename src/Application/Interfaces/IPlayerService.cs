@@ -14,8 +14,8 @@ namespace Application.Interfaces
         Player? GetById(int id);
         Player? GetByUsername(string username);
         Player Create(PlayerCreateRequest request);
-        void Update(int id, PlayerUpdateRequest request);
-        void Delete(int id);
+        void Update(int id, PlayerUpdateRequest request, int userId);
+        void Delete(int id, int userId);
         
     }
 }
