@@ -15,6 +15,5 @@ namespace Application.Interfaces
         League Create(LeagueCreateRequest request, Player player);
         void Update(int id, LeagueUpdateRequest request, int userId);
         void Delete(int id, int userId);
-        string GenerateRandomCode(int length);
     }
 }

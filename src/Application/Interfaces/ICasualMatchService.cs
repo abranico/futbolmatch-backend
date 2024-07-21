@@ -14,7 +14,6 @@ namespace Application.Interfaces
         CasualMatch? GetByJoinCode(string code);
         CasualMatch Create(CasualMatchCreateRequest request, Player player);
         void Delete(int id);
-        string GenerateRandomCode(int length);
         void Join(string username, string code);
         void Leave(Player player, string username, string code);
     }

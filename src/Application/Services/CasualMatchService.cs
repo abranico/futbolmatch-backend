@@ -38,7 +38,7 @@ namespace Application.Services
         {
             CasualMatch match = new CasualMatch();
             match.Admin = player.Id;
-            match.JoinCode = GenerateRandomCode(18);
+            match.JoinCode = CodeGenerator.GenerateRandomCode(18);
             match.Country = player.Country;
             match.City = player.City;
             match.Schedule = request.Schedule;
@@ -53,20 +53,6 @@ namespace Application.Services
         {
             var match = _casualMatchRepository.GetById(id) ?? throw new NotFoundException($"Match {id} not found");
             _casualMatchRepository.Delete(match);
-        }
-
-        public string GenerateRandomCode(int length)
-        {
-            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-            var random = new Random();
-            var code = new char[length];
-
-            for (int i = 0; i < length; i++)
-            {
-                code[i] = chars[random.Next(chars.Length)];
-            }
-
-            return new string(code);
         }
 
         public void Join(string username, string code)
