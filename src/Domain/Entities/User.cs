@@ -23,6 +23,7 @@ namespace Domain.Entities
         public DateTime DateOfBirth { get; set; }
         public Gender Gender { get; set; }
         public bool IsPremium { get; set; } = false;
+        public Role Role { get; set; }
 
     }
 }

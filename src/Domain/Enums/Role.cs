@@ -8,7 +8,7 @@ namespace Domain.Enums
 {
     public enum Role
     {
-        Captain,
-        Player
+        Player,
+        Admin
     }
 }

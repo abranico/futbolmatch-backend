@@ -3,6 +3,7 @@ using System;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20240712205106_League")]
+    partial class League
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.6");
@@ -37,10 +40,6 @@ namespace Infrastructure.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("JoinCode")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("Logo")
                         .HasColumnType("TEXT");
 
@@ -50,6 +49,9 @@ namespace Infrastructure.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("TEXT");
+
+                    b.Property<bool>("Private")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
@@ -124,6 +126,8 @@ namespace Infrastructure.Migrations
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("LeagueId");
 
                     b.ToTable("Teams");
                 });
@@ -218,13 +222,6 @@ namespace Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<bool>("Open")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Players")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.HasDiscriminator().HasValue("CasualMatch");
                 });
 
@@ -271,6 +268,15 @@ namespace Infrastructure.Migrations
                         .HasColumnType("INTEGER");
 
                     b.HasDiscriminator().HasValue("Player");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Team", b =>
+                {
+                    b.HasOne("Domain.Entities.League", "League")
+                        .WithMany()
+                        .HasForeignKey("LeagueId");
+
+                    b.Navigation("League");
                 });
 
             modelBuilder.Entity("PlayerTeam", b =>

@@ -29,6 +29,11 @@ namespace Application.Services
             var player = _playerRepository.GetById(id) ?? throw new NotFoundException($"Player {id} not found");
             return player;
         }
+        public Player? GetByUsername(string username)
+        {
+            var player = _playerRepository.GetByUsername(username) ?? throw new NotFoundException($"Player {username} not found");
+            return player;
+        }
 
         public Player Create(PlayerCreateRequest request)
         {
@@ -75,6 +80,8 @@ namespace Application.Services
             var player = _playerRepository.GetById(id) ?? throw new NotFoundException($"Player {id} not found");
             _playerRepository.Delete(player);
         }
+
+        
 
     }
 }

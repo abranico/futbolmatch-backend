@@ -16,30 +16,30 @@ namespace Infrastructure.Data
             _context = context;
         }
 
-        public List<T> GetAll()
+        public  List<T> GetAll()
         {
             return _context.Set<T>().ToList();
         }
 
-        public T? GetById<TId>(TId id)
+        public  T? GetById<TId>(TId id)
         { 
             return _context.Set<T>().Find(new  object[] { id }); 
         }
 
-        public T Create(T entity)
+        public  T Create(T entity)
         {
             _context.Set<T>().Add(entity);
             _context.SaveChanges();
             return entity;
         }
 
-        public void Delete(T entity)
+        public  void Delete(T entity)
         {
             _context.Set<T>().Remove(entity);
             _context.SaveChanges();
         }
 
-        public void Update(T entity)
+        public  void Update(T entity)
         {
             _context.Set<T>().Update(entity);
             _context.SaveChanges();

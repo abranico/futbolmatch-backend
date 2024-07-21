@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Domain.Exceptions;
 using Application.Models.Requests;
 using Application.Interfaces;
+using Application.Services;
 
 namespace Web.Controllers
 {
@@ -22,7 +23,7 @@ namespace Web.Controllers
             return Ok(_playerService.GetAll());
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("id/{id}")]
         public IActionResult GetById(int id)
         {
             try
@@ -34,6 +35,21 @@ namespace Web.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpGet("username/{username}")]
+        public IActionResult GetByUsername(string username)
+        {
+            try
+            {
+                return Ok(_playerService.GetByUsername(username));
+
+            }
+            catch (NotFoundException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
 
         [HttpPost]
         public IActionResult Create([FromBody] PlayerCreateRequest request)
@@ -70,5 +86,7 @@ namespace Web.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        
     }
 }

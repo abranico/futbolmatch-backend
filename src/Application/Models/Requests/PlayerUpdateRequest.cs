@@ -22,6 +22,5 @@ namespace Application.Models.Requests
         public string? Description { get; set; }
         public PreferredFoot? PreferredFoot { get; set; }
         public Position? Position { get; set; }
-        public Role? Role { get; set; }
     }
 }

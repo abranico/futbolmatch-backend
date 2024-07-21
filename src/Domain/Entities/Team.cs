@@ -15,7 +15,7 @@ namespace Domain.Entities
         public int Points { get; set; } = 0;
         public string Country { get; set; }
         public string City { get; set; }
-        public League? League { get; set; }
+        public int? LeagueId { get; set; }
         public string? Logo { get; set; }
     }
 }

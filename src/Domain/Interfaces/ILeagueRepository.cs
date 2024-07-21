@@ -7,8 +7,7 @@ using System.Threading.Tasks;
 
 namespace Domain.Interfaces
 {
-    public interface ICasualMatchRepository : IRepositoryBase<CasualMatch>
+    public interface ILeagueRepository : IRepositoryBase<League>
     {
-        CasualMatch? GetByJoinCode(string code);
     }
 }

@@ -29,12 +29,18 @@ namespace Web.Controllers
             return Ok(_casualMatchService.GetAll());
         }
 
-        [HttpGet("{id}")]
-        public IActionResult GetById(int id)
+        [HttpGet("availables")]
+        public IActionResult GetAllAvailables()
+        {
+            return Ok(_casualMatchService.GetAll().Where(match => match.Open == true));
+        }
+
+        [HttpGet("{code}")]
+        public IActionResult GetByJoinCode(string code)
         {
             try
             {
-                return Ok(_casualMatchService.GetById(id));
+                return Ok(_casualMatchService.GetByJoinCode(code));
 
             }
             catch (NotFoundException ex)
@@ -49,7 +55,7 @@ namespace Web.Controllers
             int userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "");
             Player? player = _playerService.GetById(userId);
             var obj = _casualMatchService.Create(request, player);
-            return CreatedAtAction(nameof(GetById), new { id = obj.Id }, obj);
+            return CreatedAtAction(nameof(GetByJoinCode), new { code = obj.JoinCode }, obj);
         }
 
         
@@ -63,6 +69,39 @@ namespace Web.Controllers
 
             }
             catch (NotFoundException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("[action]")]
+        public IActionResult Join([FromBody] string code)
+        {
+            try
+            {
+                string username = User.Claims.FirstOrDefault(c => c.Type == "username")?.Value;
+                _casualMatchService.Join(username, code);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("[action]")]
+        public IActionResult Leave([FromBody] CasualMatchLeaveRequest casualMatchLeaveRequest)
+        {
+            string username = casualMatchLeaveRequest.Username;
+            string code = casualMatchLeaveRequest.Code;
+            try
+            {
+                int userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "");
+                Player? player = _playerService.GetById(userId);
+                _casualMatchService.Leave(player, username, code);
+                return NoContent();
+            }
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }

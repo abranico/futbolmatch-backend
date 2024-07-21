@@ -35,8 +35,6 @@ namespace Infrastructure.Data
                 .ToTable("PlayersTeams")
                 );
 
-            
-
             modelBuilder
                 .Entity<User>()
                 .Property(d => d.Gender)
@@ -46,6 +44,10 @@ namespace Infrastructure.Data
                 .Entity<User>()
                 .Property(d => d.Gender)
                 .HasConversion(new EnumToStringConverter<Gender>());
+
+            modelBuilder.Entity<CasualMatch>()
+               .HasIndex(cm => cm.JoinCode)
+               .IsUnique();
 
         }
     }

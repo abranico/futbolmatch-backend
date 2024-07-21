@@ -20,5 +20,9 @@ namespace Infrastructure.Data
         {
             return _context.Players.SingleOrDefault(u => u.Email == email);
         }
+        public Player? GetByUsername(string username)
+        {
+            return _context.Players.SingleOrDefault(u => u.Username == username);
+        }
     }
 }
