@@ -16,12 +16,10 @@ namespace Application.Services
     public class CasualMatchService : ICasualMatchService
     {
         private readonly ICasualMatchRepository _casualMatchRepository;
-        private readonly IPlayerRepository _playerRepository;
 
-        public CasualMatchService(ICasualMatchRepository casualMatchRepository, IPlayerRepository playerRepository)
+        public CasualMatchService(ICasualMatchRepository casualMatchRepository)
         {
             _casualMatchRepository = casualMatchRepository;
-            _playerRepository = playerRepository;
         }
         public List<CasualMatch> GetAll()
         {

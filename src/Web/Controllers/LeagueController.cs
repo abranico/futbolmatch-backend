@@ -91,5 +91,22 @@ namespace Web.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPost("[action]/{id}")]
+        public IActionResult Join([FromRoute] int id, [FromBody] string code)
+        {
+            try
+            {
+                int userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "");
+                _leagueService.Join(id, code, userId);
+                return NoContent();
+
+            }
+            catch (NotFoundException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
     }
 }

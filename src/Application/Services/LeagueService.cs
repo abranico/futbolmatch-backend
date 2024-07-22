@@ -10,9 +10,11 @@ namespace Application.Services
     public class LeagueService : ILeagueService
     {
         private readonly ILeagueRepository _leagueRepository;
-        public LeagueService(ILeagueRepository leagueRepository)
+        private readonly ITeamRepository _teamRepository;
+        public LeagueService(ILeagueRepository leagueRepository, ITeamRepository teamRepository)
         {
             _leagueRepository = leagueRepository;
+            _teamRepository = teamRepository;
         }
         public List<League> GetAll()
         {
@@ -58,6 +60,21 @@ namespace Application.Services
             var league = _leagueRepository.GetById(id) ?? throw new NotFoundException($"League {id} not found");
             if (league.AdminId != userId) throw new InvalidOperationException("Acceso denegado");
             _leagueRepository.Delete(league);
-        }       
+        }
+
+        public void Join(int id, string code, int userId)
+        {
+            Team team = _teamRepository.GetById(id) ?? throw new NotFoundException($"Team {id} not found");
+
+            List<League> leagues = _leagueRepository.GetAll();
+
+            League league = leagues.FirstOrDefault(x => x.JoinCode == code) ?? throw new NotFoundException($"Code {code} is not valid");
+
+            if (team.CaptainId != userId) throw new InvalidOperationException("Acceso denegado.");
+
+            team.LeagueId = league.Id;
+
+            _teamRepository.Update(team);
+        }
     }
 }

@@ -85,21 +85,5 @@ namespace Web.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
-        [HttpPost("[action]/{id}")]
-        public IActionResult JoinLeague([FromRoute] int id, [FromBody] string code)
-        {
-            try
-            {
-                int userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "");
-                _teamService.JoinLeague(id, code, userId);
-                return NoContent();
-
-            }
-            catch (NotFoundException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
     }
 }
