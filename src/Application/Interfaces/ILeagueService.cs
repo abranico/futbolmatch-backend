@@ -12,6 +12,7 @@ namespace Application.Interfaces
     {
         List<League> GetAll();
         League? GetById(int id);
+        League? GetByJoinCode(string code);
         League Create(LeagueCreateRequest request, Player player);
         void Update(int id, LeagueUpdateRequest request, int userId);
         void Delete(int id, int userId);

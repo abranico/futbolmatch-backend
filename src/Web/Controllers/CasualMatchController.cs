@@ -35,7 +35,21 @@ namespace Web.Controllers
             return Ok(_casualMatchService.GetAll().Where(match => match.Open == true));
         }
 
-        [HttpGet("{code}")]
+        [HttpGet("id/{id}")]
+        public IActionResult GetById(int id)
+        {
+            try
+            {
+                return Ok(_casualMatchService.GetById(id));
+
+            }
+            catch (NotFoundException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("code/{code}")]
         public IActionResult GetByJoinCode(string code)
         {
             try

@@ -9,5 +9,6 @@ namespace Domain.Interfaces
 {
     public interface ILeagueRepository : IRepositoryBase<League>
     {
+        League? GetByJoinCode(string code);
     }
 }

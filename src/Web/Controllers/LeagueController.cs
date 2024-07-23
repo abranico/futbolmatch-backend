@@ -29,12 +29,26 @@ namespace Web.Controllers
             return Ok(_leagueService.GetAll());
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("id/{id}")]
         public IActionResult GetById(int id)
         {
             try
             {
                 return Ok(_leagueService.GetById(id));
+
+            }
+            catch (NotFoundException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("code/{code}")]
+        public IActionResult GetByJoinCode(string code)
+        {
+            try
+            {
+                return Ok(_leagueService.GetByJoinCode(code));
 
             }
             catch (NotFoundException ex)

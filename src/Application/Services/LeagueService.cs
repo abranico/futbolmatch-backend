@@ -27,6 +27,12 @@ namespace Application.Services
             return league;
         }
 
+        public League? GetByJoinCode(string code)
+        {
+            var league = _leagueRepository.GetByJoinCode(code) ?? throw new NotFoundException($"Code {code} not found");
+            return league;
+        }
+
         public League Create(LeagueCreateRequest request, Player player)
         {
             if(!player.IsPremium) throw new InvalidOperationException("Acceso denegado");
@@ -65,12 +71,9 @@ namespace Application.Services
         public void Join(int id, string code, int userId)
         {
             Team team = _teamRepository.GetById(id) ?? throw new NotFoundException($"Team {id} not found");
-
-            List<League> leagues = _leagueRepository.GetAll();
-
-            League league = leagues.FirstOrDefault(x => x.JoinCode == code) ?? throw new NotFoundException($"Code {code} is not valid");
-
             if (team.CaptainId != userId) throw new InvalidOperationException("Acceso denegado.");
+
+            League league = GetByJoinCode(code) ?? throw new NotFoundException($"Code {code} is not valid");
 
             team.LeagueId = league.Id;
 
