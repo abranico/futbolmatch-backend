@@ -21,6 +21,7 @@ namespace Application.Models
         public string Admin { get; set; }
         public List<string> Teams { get; set; }
         public string MatchFormat { get; set; }
+        public List<string> Matches { get; set; }
 
         public static LeagueDto FromEntity(League league)
         {
@@ -35,7 +36,8 @@ namespace Application.Models
                 City = league.City,
                 Admin = league.Admin.Username,
                 Teams = league.Teams.Select(p => p.Name).ToList(),
-                MatchFormat = league.MatchFormat.ToString()
+                MatchFormat = league.MatchFormat.ToString(),
+                Matches = league.Matchs.Select(p => p.Name).ToList()
             };
         }
     }

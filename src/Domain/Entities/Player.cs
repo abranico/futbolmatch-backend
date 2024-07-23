@@ -13,6 +13,6 @@ namespace Domain.Entities
         public PreferredFoot? PreferredFoot {  get; set; }
         public Position? Position { get; set; }
         public ICollection<Team> Teams { get; set; } = new List<Team>();
-        public bool isCaptain { get; set; } = false;       
+        public bool isCaptain { get; set; } = false;
     }
 }

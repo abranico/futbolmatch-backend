@@ -5,11 +5,14 @@ using Application.Models.Requests;
 using Application.Interfaces;
 using Application.Services;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Web.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
+
     public class PlayerController : ControllerBase
     {
         private readonly IPlayerService _playerService;
@@ -19,12 +22,14 @@ namespace Web.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult GetAll()
         {
             return Ok(_playerService.GetAll());
         }
 
         [HttpGet("id/{id}")]
+        [AllowAnonymous]
         public IActionResult GetById(int id)
         {
             try
@@ -38,6 +43,7 @@ namespace Web.Controllers
         }
 
         [HttpGet("username/{username}")]
+        [AllowAnonymous]
         public IActionResult GetByUsername(string username)
         {
             try
@@ -53,10 +59,11 @@ namespace Web.Controllers
 
 
         [HttpPost]
+        [AllowAnonymous]
         public IActionResult Create([FromBody] PlayerCreateRequest request)
         {
             var obj = _playerService.Create(request);
-            return CreatedAtAction(nameof(GetById), new { id = obj.Id}, obj);
+            return CreatedAtAction(nameof(GetById), new { id = obj.Id }, obj);
         }
 
         [HttpPut("{id}")]
@@ -68,7 +75,7 @@ namespace Web.Controllers
                 _playerService.Update(id, request, userId);
                 return NoContent();
 
-            } catch (NotFoundException ex)
+            } catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -84,10 +91,26 @@ namespace Web.Controllers
                 return NoContent();
 
             }
-            catch (NotFoundException ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
+        }
+
+        [HttpPost("[action]")]
+        public IActionResult PurchasePremium([FromBody] PurchasePremiumRequest request)
+        {
+            try
+            {
+                int userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "");
+                _playerService.PurchasePremium(userId, request);
+                return NoContent();
+            }
+            catch (NotAllowedException ex) 
+            {
+                return BadRequest(ex.Message);
+            }
+            
         }
 
         

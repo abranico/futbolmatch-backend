@@ -36,9 +36,10 @@ namespace Application.Services
             return TeamDto.FromEntity(team);
         }
 
-        public TeamDto Create(TeamCreateRequest request, Player authenticatedPlayer)
+        public TeamDto Create(TeamCreateRequest request, int userId)
         {
-            if(authenticatedPlayer.isCaptain) throw new NotAllowedException("No puedes crear mas de un equipo.");
+            Player authenticatedPlayer = _playerRepository.GetById(userId);
+            if (authenticatedPlayer.isCaptain) throw new NotAllowedException("No puedes crear mas de un equipo.");
 
             Team team = new Team();
             team.Name = request.Name;
@@ -52,6 +53,7 @@ namespace Application.Services
             authenticatedPlayer.isCaptain = true;
             authenticatedPlayer.Teams.Add(team);
             _playerRepository.Update(authenticatedPlayer);
+
             var createdTeam = _teamRepository.Create(team);
 
             return TeamDto.FromEntity(createdTeam);
@@ -60,8 +62,9 @@ namespace Application.Services
 
         public void Update(int id, TeamUpdateRequest request, int userId)
         {
+            Player authenticatedPlayer = _playerRepository.GetById(userId);
             var team = _teamRepository.GetById(id) ?? throw new NotFoundException($"Team {id} not found");
-            if (team.Captain.Id != userId) throw new NotAllowedException("Acceso denegado.");
+            if (team.Captain.Id != userId && authenticatedPlayer.Role != Role.Admin) throw new NotAllowedException("Acceso denegado.");
 
             team.Name = request.Name;
             team.Logo = request.Logo;
@@ -69,17 +72,22 @@ namespace Application.Services
             _teamRepository.Update(team);
         }
 
-        public void Delete(int id, Player authenticatedPlayer)
+        public void Delete(int id, int userId)
         {
+            Player authenticatedPlayer = _playerRepository.GetById(userId);         
             var team = _teamRepository.GetById(id) ?? throw new NotFoundException($"Team {id} not found");
-            if (team.Captain.Id != authenticatedPlayer.Id) throw new NotAllowedException("Acceso denegado.");
-            authenticatedPlayer.isCaptain = false;
-            _playerRepository.Update(authenticatedPlayer);
+            Player player = _playerRepository.GetById(team.Captain.Id);
+
+            if (team.Captain.Id != authenticatedPlayer.Id && authenticatedPlayer.Role != Role.Admin) throw new NotAllowedException("Acceso denegado.");
+
+            player.isCaptain = false;
+            _playerRepository.Update(player);
             _teamRepository.Delete(team);
         }
 
-        public void Join(Player authenticatedPlayer, string code)
+        public void Join(int userId, string code)
         {
+            Player authenticatedPlayer = _playerRepository.GetById(userId);
             var team = _teamRepository.GetByJoinCode(code) ?? throw new NotFoundException($"Code {code} not found");
 
             if (team.Players.Contains(authenticatedPlayer))
@@ -91,8 +99,11 @@ namespace Application.Services
             _teamRepository.Update(team);
         }
 
-        public void Leave(Player authenticatedPlayer, Player player, string code)
+        public void Leave(int userId, string username, string code)
         {
+            Player authenticatedPlayer = _playerRepository.GetById(userId);
+            Player? player = _playerRepository.GetByUsername(username) ?? throw new NotFoundException($"Player {username} not found");
+
             var team = _teamRepository.GetByJoinCode(code) ?? throw new NotFoundException($"Code {code} not found");
 
             if (!team.Players.Contains(player))
@@ -100,7 +111,7 @@ namespace Application.Services
 
             if (player.Id == team.Captain.Id && player.Username == authenticatedPlayer.Username)
             {
-                Delete(team.Id, authenticatedPlayer);
+                Delete(team.Id, authenticatedPlayer.Id);
                 authenticatedPlayer.isCaptain = false;
                 _playerRepository.Update(player);
                 return;

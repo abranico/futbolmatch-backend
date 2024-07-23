@@ -5,16 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.Entities
+namespace Application.Models.Requests
 {
-    public abstract class Match
+    public class CasualMatchUpdateRequest
     {
-        public int Id { get; set; }
         public string Name { get; set; }
-        public string Country {  get; set; }
-        public string City {  get; set; }
         public DateTime Schedule { get; set; }
         public MatchFormat MatchFormat { get; set; }
-        public MatchMode MatchMode { get; set; }
     }
 }

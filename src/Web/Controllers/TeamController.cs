@@ -51,8 +51,7 @@ namespace Web.Controllers
             try
             {
                 int userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "");
-                Player? authenticatedPlayer = _playerService.GetById(userId);
-                var obj = _teamService.Create(request, authenticatedPlayer);
+                var obj = _teamService.Create(request, userId);
                 return CreatedAtAction(nameof(GetById), new { id = obj.Id }, obj);
             }
             catch (NotAllowedException ex)
@@ -84,8 +83,7 @@ namespace Web.Controllers
             try
             {
                 int userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "");
-                Player? authenticatedPlayer = _playerService.GetById(userId);
-                _teamService.Delete(id, authenticatedPlayer);
+                _teamService.Delete(id, userId);
                 return NoContent();
 
             }
@@ -101,8 +99,7 @@ namespace Web.Controllers
             try
             {
                 int userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "");
-                Player? authenticatedPlayer = _playerService.GetById(userId);
-                _teamService.Join(authenticatedPlayer, code);
+                _teamService.Join(userId, code);
                 return NoContent();
             }
             catch (Exception ex)
@@ -119,9 +116,8 @@ namespace Web.Controllers
             try
             {
                 int userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "");
-                Player? authenticatedPlayer = _playerService.GetById(userId);
-                Player? player = _playerService.GetByUsername(username);
-                _teamService.Leave(authenticatedPlayer, player, code);
+                
+                _teamService.Leave(userId, username, code);
                 return NoContent();
             }
             catch (Exception ex)

@@ -14,9 +14,10 @@ namespace Application.Interfaces
         List<CasualMatchDto> GetAll();
         CasualMatchDto? GetById(int id);
         CasualMatchDto? GetByJoinCode(string code);
-        CasualMatchDto Create(CasualMatchCreateRequest request, Player player);
-        void Delete(int id, Player authenticatedPlayer);
-        void Join(Player authenticatedPlayer, string code);
-        void Leave(Player authenticatedPlayer, Player player, string code);
+        CasualMatchDto Create(CasualMatchCreateRequest request, int userId);
+        void Delete(int id, int userId);
+        void Update(int id, int userId, CasualMatchUpdateRequest request);
+        void Join(int userId, string code);
+        void Leave(int userId, string username, string code);
     }
 }

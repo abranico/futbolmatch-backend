@@ -1,4 +1,5 @@
-﻿using Domain.Enums;
+﻿using Domain.Entities;
+using Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,5 +20,9 @@ namespace Application.Models.Requests
         public DateTime DateOfBirth { get; set; }    
         public Gender Gender { get; set; }
         public Role Role { get; set; }
+        public string PhoneNumber { get; set; }
+        
     }
+
 }
+

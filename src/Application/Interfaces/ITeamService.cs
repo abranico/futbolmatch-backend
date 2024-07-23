@@ -14,10 +14,10 @@ namespace Application.Interfaces
     {
         List<TeamDto> GetAll();
         TeamDto? GetById(int id);
-        TeamDto Create(TeamCreateRequest request, Player player);
+        TeamDto Create(TeamCreateRequest request, int userId);
         void Update(int id, TeamUpdateRequest request, int userId);
-        void Delete(int id, Player authenticatedPlayer);
-        void Join(Player player, string code);
-        void Leave(Player authenticatedPlayer, Player player, string code);
+        void Delete(int id, int userId);
+        void Join(int userId, string code);
+        void Leave(int userId, string username, string code);
     }
 }

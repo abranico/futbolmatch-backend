@@ -1,5 +1,6 @@
 ﻿using Domain.Entities;
 using Domain.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,6 +24,21 @@ namespace Infrastructure.Data
         public Player? GetByUsername(string username)
         {
             return _context.Players.SingleOrDefault(u => u.Username == username);
+        }
+        public override List<Player> GetAll()
+        {
+            return _context.Players.Include(t => t.Teams).ToList();
+        }
+
+        public override Player? GetById<TId>(TId id)
+        {
+            if (id is int intId)
+            {
+                return _context.Players
+                        .Include(m => m.Teams)
+                        .FirstOrDefault(m => m.Id == intId);
+            }
+            throw new ArgumentException("Tipo de ID no compatible.");
         }
     }
 }

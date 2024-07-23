@@ -1,4 +1,5 @@
 ﻿using Application.Interfaces;
+using Application.Models;
 using Application.Models.Requests;
 using Domain.Entities;
 using Domain.Enums;
@@ -19,23 +20,24 @@ namespace Application.Services
         {
             _playerRepository = playerRepository;
         }
-        public List<Player> GetAll()
+        public List<PlayerDto> GetAll()
         {
-            return _playerRepository.GetAll();
+            var players = _playerRepository.GetAll();
+            return players.Select(PlayerDto.FromEntity).ToList();
         }
 
-        public Player? GetById(int id)
+        public PlayerDto? GetById(int id)
         {
             var player = _playerRepository.GetById(id) ?? throw new NotFoundException($"Player {id} not found");
-            return player;
+            return PlayerDto.FromEntity(player);
         }
-        public Player? GetByUsername(string username)
+        public PlayerDto? GetByUsername(string username)
         {
             var player = _playerRepository.GetByUsername(username) ?? throw new NotFoundException($"Player {username} not found");
-            return player;
+            return PlayerDto.FromEntity(player); ;
         }
 
-        public Player Create(PlayerCreateRequest request)
+        public PlayerDto Create(PlayerCreateRequest request)
         {
             Player player = new Player();
 
@@ -46,18 +48,21 @@ namespace Application.Services
             player.Password = request.Password;
             player.Country = request.Country;
             player.City = request.City;
+            player.PhoneNumber = request.PhoneNumber;
             player.DateOfBirth = request.DateOfBirth;
             player.Gender = request.Gender;
             player.Role = request.Role;
 
-            return _playerRepository.Create(player);
+
+            var createdPlayer = _playerRepository.Create(player);
+            return PlayerDto.FromEntity(createdPlayer);
 
         }
 
         public void Update(int id, PlayerUpdateRequest request, int userId)
         {
             var player = _playerRepository.GetById(id) ?? throw new NotFoundException($"Player {id} not found");
-            if(player.Id != userId) throw new InvalidOperationException("Acceso denegado.");
+            if(player.Id != userId && player.Role != Role.Admin) throw new NotAllowedException("Acceso denegado.");
 
             player.Email = request.Email ?? player.Email;
             player.Username = request.Username ?? player.Username;
@@ -79,11 +84,21 @@ namespace Application.Services
         public void Delete(int id, int userId)
         {
             var player = _playerRepository.GetById(id) ?? throw new NotFoundException($"Player {id} not found");
-            if (player.Id != userId) throw new InvalidOperationException("Acceso denegado.");
+            if (player.Id != userId && player.Role != Role.Admin) throw new NotAllowedException("Acceso denegado.");
             _playerRepository.Delete(player);
         }
 
-        
+        public void PurchasePremium(int userId, PurchasePremiumRequest request)
+        {
+            var player = _playerRepository.GetById(userId);
+            if (player.IsPremium) throw new NotAllowedException("Ya eres Premium");
+            player.IsPremium = true;
+            _playerRepository.Update(player);
+            
+        }
+
+
+
 
     }
 }

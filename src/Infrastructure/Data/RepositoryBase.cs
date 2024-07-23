@@ -21,16 +21,18 @@ namespace Infrastructure.Data
             return _context.Set<T>().ToList();
         }
 
-        public  T? GetById<TId>(TId id)
+        public virtual T? GetById<TId>(TId id)
         { 
             return _context.Set<T>().Find(new  object[] { id }); 
         }
 
-        public  T Create(T entity)
+        public virtual T Create(T entity)
         {
             _context.Set<T>().Add(entity);
             _context.SaveChanges();
-            return entity;
+             return entity;         
+
+            
         }
 
         public  void Delete(T entity)

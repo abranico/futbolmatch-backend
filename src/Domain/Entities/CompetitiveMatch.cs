@@ -9,7 +9,7 @@ namespace Domain.Entities
     public class CompetitiveMatch: Match
     {
         public League League { get; set; }
-        public string Result { get; set; }
+        public string? Result { get; set; }
         public Team HomeTeam { get; set; }
         public Team AwayTeam { get; set; }
     }

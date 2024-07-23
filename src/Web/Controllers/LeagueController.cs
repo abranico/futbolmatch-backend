@@ -63,8 +63,7 @@ namespace Web.Controllers
             try
             {
                 int userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "");
-                Player? player = _playerService.GetById(userId);
-                var obj = _leagueService.Create(request, player);
+                var obj = _leagueService.Create(request, userId);
                 return CreatedAtAction(nameof(GetById), new { id = obj.Id }, obj);
             }
             catch(Exception ex)
@@ -106,14 +105,13 @@ namespace Web.Controllers
             }
         }
 
-        [HttpPost("[action]/{id}")]
-        public IActionResult Join([FromBody] LeagueJoinRequest request)
+        [HttpPost("[action]")]
+        public IActionResult Join([FromBody] string code)
         {
             try
             {
                 int userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "");
-                Player? authenticatedPlayer = _playerService.GetById(userId);
-                _leagueService.Join(authenticatedPlayer, request.Code, request.TeamId);
+                _leagueService.Join(userId, code);
                 return NoContent();
 
             }
@@ -129,8 +127,7 @@ namespace Web.Controllers
             try
             {
                 int userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "");
-                Player? authenticatedPlayer = _playerService.GetById(userId);
-                _leagueService.Leave(authenticatedPlayer, teamId);
+                _leagueService.Leave(userId, teamId);
                 return NoContent();
             }
             catch (Exception ex)

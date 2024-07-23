@@ -3,6 +3,7 @@ using System;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20240722215819_CasualMatchPlayers")]
+    partial class CasualMatchPlayers
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.6");
@@ -152,6 +155,9 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("CaptainId");
 
+                    b.HasIndex("JoinCode")
+                        .IsUnique();
+
                     b.HasIndex("LeagueId");
 
                     b.ToTable("Teams");
@@ -235,7 +241,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("TeamsId");
 
-                    b.ToTable("TeamPlayers", (string)null);
+                    b.ToTable("PlayersTeams", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.CasualMatch", b =>
@@ -254,6 +260,9 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("AdminId");
 
+                    b.HasIndex("JoinCode")
+                        .IsUnique();
+
                     b.HasDiscriminator().HasValue("CasualMatch");
                 });
 
@@ -271,6 +280,7 @@ namespace Infrastructure.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Result")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasIndex("AwayTeamId");
@@ -385,7 +395,7 @@ namespace Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasOne("Domain.Entities.League", "League")
-                        .WithMany("Matchs")
+                        .WithMany()
                         .HasForeignKey("LeagueId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -399,8 +409,6 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.League", b =>
                 {
-                    b.Navigation("Matchs");
-
                     b.Navigation("Teams");
                 });
 #pragma warning restore 612, 618

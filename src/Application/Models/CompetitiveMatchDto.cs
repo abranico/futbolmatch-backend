@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Application.Models
 {
-    public class CasualMatchDto
+    public class CompetitiveMatchDto
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -18,14 +18,14 @@ namespace Application.Models
         public string Schedule { get; set; }
         public string MatchFormat { get; set; }
         public string MatchMode { get; set; }
-        public string Admin { get; set; }
-        public string JoinCode { get; set; }
-        public List<string> Players { get; set; }
-        public bool Open { get; set; }
+        public string League { get; set; }
+        public string Result { get; set; }
+        public string HomeTeam { get; set; }
+        public string AwayTeam { get; set; }
 
-        public static CasualMatchDto FromEntity(CasualMatch match)
+        public static CompetitiveMatchDto FromEntity(CompetitiveMatch match)
         {
-            return new CasualMatchDto
+            return new CompetitiveMatchDto
             {
                 Id = match.Id,
                 Name = match.Name,
@@ -34,10 +34,11 @@ namespace Application.Models
                 Schedule = match.Schedule.ToString("dd 'de' MMMM 'de' yyyy", new CultureInfo("es-ES")),
                 MatchFormat = match.MatchFormat.ToString(),
                 MatchMode = match.MatchMode.ToString(),
-                Admin = match.Admin.Username,
-                JoinCode = match.JoinCode,
-                Players = match.Players.Select(p => p.Username).ToList(),
-                Open = match.Open
+                League = match.League.Name,
+                Result = match.Result,
+                HomeTeam = match.HomeTeam.Name,
+                AwayTeam = match.AwayTeam.Name
+
             };
         }
     }

@@ -14,10 +14,10 @@ namespace Application.Interfaces
         List<LeagueDto> GetAll();
         LeagueDto? GetById(int id);
         LeagueDto? GetByJoinCode(string code);
-        LeagueDto Create(LeagueCreateRequest request, Player player);
+        LeagueDto Create(LeagueCreateRequest request, int userId);
         void Update(int id, LeagueUpdateRequest request, int userId);
         void Delete(int id, int userId);
-        void Join(Player authenticatedPlayer, string code, int teamId);
-        void Leave(Player authenticatedPlayer, int teamId);
+        void Join(int userId, string code);
+        void Leave(int userId, int teamId);
     }
 }

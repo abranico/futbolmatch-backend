@@ -20,5 +20,7 @@ namespace Domain.Entities
         public ICollection<Team> Teams { get; set; } = new List<Team>();
         public MatchFormat MatchFormat { get; set; }
 
+        public ICollection<CompetitiveMatch> Matchs = new List<CompetitiveMatch>();
+
     }
 }

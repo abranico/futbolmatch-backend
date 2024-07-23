@@ -67,8 +67,7 @@ namespace Web.Controllers
         public IActionResult Create([FromBody] CasualMatchCreateRequest request)
         {
             int userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "");
-            Player? authenticatedPlayer = _playerService.GetById(userId);
-            var obj = _casualMatchService.Create(request, authenticatedPlayer);
+            var obj = _casualMatchService.Create(request, userId);
             return CreatedAtAction(nameof(GetById), new { id = obj.Id }, obj);
         }
 
@@ -79,8 +78,23 @@ namespace Web.Controllers
             try
             {
                 int userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "");
-                Player? authenticatedPlayer = _playerService.GetById(userId);
-                _casualMatchService.Delete(id, authenticatedPlayer);
+                _casualMatchService.Delete(id, userId);
+                return NoContent();
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPut("{id}")]
+        public IActionResult Update([FromRoute] int id, [FromBody] CasualMatchUpdateRequest request)
+        {
+            try
+            {
+                int userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "");
+                _casualMatchService.Update(id, userId, request);
                 return NoContent();
 
             }
@@ -96,8 +110,7 @@ namespace Web.Controllers
             try
             {
                 int userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "");
-                Player? authenticatedPlayer = _playerService.GetById(userId);
-                _casualMatchService.Join(authenticatedPlayer, code);
+                _casualMatchService.Join(userId, code);
                 return NoContent();
             }
             catch (Exception ex)
@@ -114,9 +127,7 @@ namespace Web.Controllers
             try
             {
                 int userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "");
-                Player? authenticatedPlayer = _playerService.GetById(userId);
-                Player? player = _playerService.GetByUsername(username);
-                _casualMatchService.Leave(authenticatedPlayer, player, code);
+                _casualMatchService.Leave(userId, username, code);
                 return NoContent();
             }
             catch (Exception ex)

@@ -1,4 +1,5 @@
-﻿using Application.Models.Requests;
+﻿using Application.Models;
+using Application.Models.Requests;
 using Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -10,12 +11,14 @@ namespace Application.Interfaces
 {
     public interface IPlayerService
     {
-        List<Player> GetAll();
-        Player? GetById(int id);
-        Player? GetByUsername(string username);
-        Player Create(PlayerCreateRequest request);
+        List<PlayerDto> GetAll();
+        PlayerDto? GetById(int id);
+        PlayerDto? GetByUsername(string username);
+        PlayerDto Create(PlayerCreateRequest request);
         void Update(int id, PlayerUpdateRequest request, int userId);
         void Delete(int id, int userId);
-        
+        void PurchasePremium(int userId, PurchasePremiumRequest request);
+
+
     }
 }

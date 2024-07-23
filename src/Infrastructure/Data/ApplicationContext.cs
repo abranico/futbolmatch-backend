@@ -29,26 +29,29 @@ namespace Infrastructure.Data
         {
 
             modelBuilder.Entity<Team>()
-            .HasMany(x => x.Players)
-            .WithMany(x => x.Teams)
-            .UsingEntity(j => j
-                .ToTable("PlayersTeams")
-                );
+                .HasOne(cm => cm.Captain);
+
+            modelBuilder.Entity<CompetitiveMatch>()
+        .HasOne(cm => cm.League)
+        .WithMany(l => l.Matchs)
+        .HasForeignKey("LeagueId");
+
+            modelBuilder.Entity<League>()
+                .HasMany(l => l.Matchs)
+                .WithOne(cm => cm.League)
+                .HasForeignKey("LeagueId"); 
 
             modelBuilder.Entity<Team>()
-            .HasOne(t => t.Captain)
-            .WithMany()
-            .HasForeignKey("CaptainId"); 
-
+                .HasMany(cm => cm.Players)
+                .WithMany(cm => cm.Teams)
+                .UsingEntity(j => j.ToTable("TeamPlayers"));
 
             modelBuilder.Entity<CasualMatch>()
-               .HasIndex(cm => cm.JoinCode)
-               .IsUnique();
+                .HasMany(cm => cm.Players)
+                .WithMany()
+                .UsingEntity(j => j.ToTable("CasualMatchPlayers"));
 
-            modelBuilder.Entity<Team>()
-              .HasIndex(cm => cm.JoinCode)
-              .IsUnique();
-
+           
         }
     }
 }

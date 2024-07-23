@@ -20,12 +20,55 @@ namespace Infrastructure.Data
 
         public Team? GetByJoinCode(string code)
         {
-            return _context.Teams.SingleOrDefault(u => u.JoinCode == code);
+            return _context.Teams
+                .Include(m => m.Captain)
+                .Include(m => m.Players)
+                .Include(m => m.League)
+                .FirstOrDefault(m => m.JoinCode == code);
         }
 
         public override List<Team> GetAll()
         {
-            return _context.Teams.Include(t => t.Players).ToList(); 
+            return _context.Teams
+                    .Include(m => m.Captain)
+                    .Include(t => t.Players)
+                    .Include(m => m.League)
+                    .ToList(); 
+        }
+
+
+        public override Team? GetById<TId>(TId id)
+        {
+            if (id is int intId)
+            {
+                return _context.Teams
+                        .Include(m => m.Captain)
+                        .Include(m => m.Players)
+                        .Include(m => m.League)
+                        .FirstOrDefault(m => m.Id == intId);
+            }
+            throw new ArgumentException("Tipo de ID no compatible.");
+        }
+
+        public override Team Create(Team entity)
+        {
+            var existingTeam = _context.Set<Team>()
+           .AsNoTracking()
+           .FirstOrDefault(t => t.Id == entity.Id);
+
+            if (existingTeam != null)
+            {
+                // Si existe, usar Attach para evitar el problema de duplicación
+                _context.Set<Team>().Attach(entity);
+            }
+            else
+            {
+                // Si no existe, añadir la nueva entidad
+                _context.Set<Team>().Add(entity);
+            }
+
+            _context.SaveChanges();
+            return entity;
         }
 
     }
