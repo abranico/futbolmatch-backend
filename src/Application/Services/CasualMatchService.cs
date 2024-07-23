@@ -1,4 +1,5 @@
 ﻿using Application.Interfaces;
+using Application.Models;
 using Application.Models.Requests;
 using Domain.Entities;
 using Domain.Enums;
@@ -21,50 +22,53 @@ namespace Application.Services
         {
             _casualMatchRepository = casualMatchRepository;
         }
-        public List<CasualMatch> GetAll()
+        public List<CasualMatchDto> GetAll()
         {
-            return _casualMatchRepository.GetAll();
+            var matches = _casualMatchRepository.GetAll();
+            return matches.Select(CasualMatchDto.FromEntity).ToList();
         }
 
-        public CasualMatch? GetById(int id)
+        public CasualMatchDto? GetById(int id)
         {
             var match = _casualMatchRepository.GetById(id) ?? throw new NotFoundException($"Match {id} not found");
-            return match;
+            return CasualMatchDto.FromEntity(match);
         }
 
-        public CasualMatch? GetByJoinCode(string code)
+        public CasualMatchDto? GetByJoinCode(string code)
         {
             var match = _casualMatchRepository.GetByJoinCode(code) ?? throw new NotFoundException($"Code {code} not found");
-            return match;
+            return CasualMatchDto.FromEntity(match);
         }
 
-        public CasualMatch Create(CasualMatchCreateRequest request, Player player)
+        public CasualMatchDto Create(CasualMatchCreateRequest request, Player authenticatedPlayer)
         {
             CasualMatch match = new CasualMatch();
-            match.Admin = player.Id;
+            match.Admin = authenticatedPlayer;
             match.JoinCode = CodeGenerator.GenerateRandomCode(18);
-            match.Country = player.Country;
-            match.City = player.City;
+            match.Country = authenticatedPlayer.Country;
+            match.City = authenticatedPlayer.City;
             match.Schedule = request.Schedule;
             match.MatchFormat = request.MatchFormat;
             match.MatchMode = MatchMode.Casual;
-            match.Players.Add(player.Username);
+            match.Players.Add(authenticatedPlayer);
 
-            return _casualMatchRepository.Create(match);
+            var createdMatch = _casualMatchRepository.Create(match);
+            return CasualMatchDto.FromEntity(createdMatch);
         }
 
-        public void Delete(int id)
+        public void Delete(int id, Player authenticatedPlayer)
         {
             var match = _casualMatchRepository.GetById(id) ?? throw new NotFoundException($"Match {id} not found");
+            if (match.Admin.Id != authenticatedPlayer.Id) throw new NotAllowedException("Acceso denegado.");
             _casualMatchRepository.Delete(match);
         }
 
-        public void Join(string username, string code)
+        public void Join(Player authenticatedPlayer, string code)
         {
             var match = _casualMatchRepository.GetByJoinCode(code) ?? throw new NotFoundException($"Code {code} not found");
             
-            if(match.Players.Contains(username))
-                throw new InvalidOperationException($"{username} ya se encuentra en el partido");
+            if(match.Players.Contains(authenticatedPlayer))
+                throw new InvalidOperationException($"{authenticatedPlayer.Username} ya se encuentra en el partido");
 
             var format = match.MatchFormat;
 
@@ -94,27 +98,27 @@ namespace Application.Services
                 }
             }
 
-            match.Players.Add(username);
+            match.Players.Add(authenticatedPlayer);
             _casualMatchRepository.Update(match);
         }
 
-        public void Leave(Player player, string username, string code)
+        public void Leave(Player authenticatedPlayer, Player player, string code)
         {
             var match = _casualMatchRepository.GetByJoinCode(code) ?? throw new NotFoundException($"Code {code} not found");
 
-            if (!match.Players.Contains(username))
-                throw new InvalidOperationException($"{username} no se encuentra en el partido");
+            if (!match.Players.Contains(player))
+                throw new InvalidOperationException($"{player.Username} no se encuentra en el partido");
 
-            if (player.Id == match.Admin && username == player.Username)
+            if (player.Id == match.Admin.Id && player.Username == authenticatedPlayer.Username)
             {
-                Delete(match.Id);
+                Delete(match.Id, authenticatedPlayer);
                 return;
             }
 
-            if (username != player.Username && player.Id != match.Admin)
+            if (player.Id != authenticatedPlayer.Id && authenticatedPlayer.Id != match.Admin.Id)
                 throw new InvalidOperationException($"No puedes borrar a este usuario");
 
-            match.Players.Remove(username);
+            match.Players.Remove(player);
             _casualMatchRepository.Update(match);
 
         }

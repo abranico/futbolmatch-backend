@@ -11,7 +11,7 @@ namespace Application.Models
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public int CaptainId { get; set; }
+        public string Captain { get; set; }
         public string JoinCode { get; set; }
         public ICollection<string> Players { get; set; }
         public int Points { get; set; } = 0;
@@ -26,7 +26,7 @@ namespace Application.Models
             {
                 Id = team.Id,
                 Name = team.Name,
-                CaptainId = team.CaptainId,
+                Captain = team.Captain.Username,
                 JoinCode = team.JoinCode,
                 Players = team.Players.Select(p => p.Username).ToList(),
                 Points = team.Points,

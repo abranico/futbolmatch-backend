@@ -36,22 +36,22 @@ namespace Application.Services
             return TeamDto.FromEntity(team);
         }
 
-        public TeamDto Create(TeamCreateRequest request, Player player)
+        public TeamDto Create(TeamCreateRequest request, Player authenticatedPlayer)
         {
-            if(player.isCaptain) throw new NotAllowedException("No puedes crear mas de un equipo.");
+            if(authenticatedPlayer.isCaptain) throw new NotAllowedException("No puedes crear mas de un equipo.");
 
             Team team = new Team();
             team.Name = request.Name;
-            team.CaptainId = player.Id;
-            team.Country = player.Country;
-            team.City = player.City;
+            team.Captain = authenticatedPlayer;
+            team.Country = authenticatedPlayer.Country;
+            team.City = authenticatedPlayer.City;
             team.Logo = request.Logo;
-            team.Players.Add(player);
+            team.Players.Add(authenticatedPlayer);
             team.JoinCode = CodeGenerator.GenerateRandomCode(18);
 
-            player.isCaptain = true;
-            player.Teams.Add(team);
-            _playerRepository.Update(player);
+            authenticatedPlayer.isCaptain = true;
+            authenticatedPlayer.Teams.Add(team);
+            _playerRepository.Update(authenticatedPlayer);
             var createdTeam = _teamRepository.Create(team);
 
             return TeamDto.FromEntity(createdTeam);
@@ -61,7 +61,7 @@ namespace Application.Services
         public void Update(int id, TeamUpdateRequest request, int userId)
         {
             var team = _teamRepository.GetById(id) ?? throw new NotFoundException($"Team {id} not found");
-            if (team.CaptainId != userId) throw new NotAllowedException("Acceso denegado.");
+            if (team.Captain.Id != userId) throw new NotAllowedException("Acceso denegado.");
 
             team.Name = request.Name;
             team.Logo = request.Logo;
@@ -98,7 +98,7 @@ namespace Application.Services
             if (!team.Players.Contains(player))
                 throw new NotAllowedException($"{player.Username} no se encuentra en el partido");
 
-            if (player.Id == team.CaptainId && player.Username == authenticatedPlayer.Username)
+            if (player.Id == team.Captain.Id && player.Username == authenticatedPlayer.Username)
             {
                 Delete(team.Id, authenticatedPlayer);
                 authenticatedPlayer.isCaptain = false;
