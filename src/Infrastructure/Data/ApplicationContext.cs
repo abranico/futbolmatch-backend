@@ -49,6 +49,10 @@ namespace Infrastructure.Data
                .HasIndex(cm => cm.JoinCode)
                .IsUnique();
 
+            modelBuilder.Entity<Team>()
+              .HasIndex(cm => cm.JoinCode)
+              .IsUnique();
+
         }
     }
 }

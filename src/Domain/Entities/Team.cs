@@ -11,6 +11,7 @@ namespace Domain.Entities
         public int Id { get; set; }
         public string Name { get; set; }
         public int CaptainId { get; set; }
+        public string JoinCode { get; set; }
         public ICollection<Player> Players { get; set; } = new List<Player>();
         public int Points { get; set; } = 0;
         public string Country { get; set; }

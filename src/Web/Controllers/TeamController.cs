@@ -85,5 +85,40 @@ namespace Web.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPost("[action]")]
+        public IActionResult Join([FromBody] string code)
+        {
+            try
+            {
+                int userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "");
+                Player? authenticatedPlayer = _playerService.GetById(userId);
+                _teamService.Join(authenticatedPlayer, code);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("[action]")]
+        public IActionResult Leave([FromBody] TeamLeaveRequest teamLeaveRequest)
+        {
+            string username = teamLeaveRequest.Username;
+            string code = teamLeaveRequest.Code;
+            try
+            {
+                int userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "");
+                Player? authenticatedPlayer = _playerService.GetById(userId);
+                Player? player = _playerService.GetByUsername(username);
+                _teamService.Leave(authenticatedPlayer, player, code);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

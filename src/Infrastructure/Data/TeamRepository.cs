@@ -16,5 +16,10 @@ namespace Infrastructure.Data
         {
             _context = context;
         }
+
+        public Team? GetByJoinCode(string code)
+        {
+            return _context.Teams.SingleOrDefault(u => u.JoinCode == code);
+        }
     }
 }

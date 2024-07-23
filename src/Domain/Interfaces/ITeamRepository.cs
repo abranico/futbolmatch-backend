@@ -9,5 +9,6 @@ namespace Domain.Interfaces
 {
     public interface ITeamRepository : IRepositoryBase<Team>
     {
+        Team? GetByJoinCode(string code);
     }
 }

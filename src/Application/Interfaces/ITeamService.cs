@@ -3,6 +3,7 @@ using Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,6 +15,8 @@ namespace Application.Interfaces
         Team? GetById(int id);
         Team Create(TeamCreateRequest request, Player player);
         void Update(int id, TeamUpdateRequest request, int userId);
-        void Delete(int id, int userId);        
+        void Delete(int id, int userId);
+        void Join(Player player, string code);
+        void Leave(Player authenticatedPlayer, Player player, string code);
     }
 }
