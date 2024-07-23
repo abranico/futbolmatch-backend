@@ -48,10 +48,18 @@ namespace Web.Controllers
         [HttpPost]
         public IActionResult Create([FromBody] TeamCreateRequest request)
         {
-            int userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "");
-            Player? player = _playerService.GetById(userId);
-            var obj = _teamService.Create(request, player);
-            return CreatedAtAction(nameof(GetById), new { id = obj.Id }, obj);
+            try
+            {
+                int userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "");
+                Player? player = _playerService.GetById(userId);
+                var obj = _teamService.Create(request, player);
+                return CreatedAtAction(nameof(GetById), new { id = obj.Id }, obj);
+            }
+            catch (NotAllowedException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            
         }
 
         [HttpPut("{id}")]
@@ -76,7 +84,8 @@ namespace Web.Controllers
             try
             {
                 int userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "");
-                _teamService.Delete(id, userId);
+                Player? authenticatedPlayer = _playerService.GetById(userId);
+                _teamService.Delete(id, authenticatedPlayer);
                 return NoContent();
 
             }

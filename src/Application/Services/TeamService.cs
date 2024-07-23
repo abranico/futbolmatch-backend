@@ -1,4 +1,5 @@
 ﻿using Application.Interfaces;
+using Application.Models;
 using Application.Models.Requests;
 using Domain.Entities;
 using Domain.Enums;
@@ -23,20 +24,21 @@ namespace Application.Services
             _teamRepository = teamRepository;
             _playerRepository = playerRepository;
         }
-        public List<Team> GetAll()
+        public List<TeamDto> GetAll()
         {
-            return _teamRepository.GetAll();
+            var teams = _teamRepository.GetAll();
+            return teams.Select(TeamDto.FromEntity).ToList();
         }
 
-        public Team? GetById(int id)
+        public TeamDto? GetById(int id)
         {
             var team = _teamRepository.GetById(id) ?? throw new NotFoundException($"Team {id} not found");
-            return team;
+            return TeamDto.FromEntity(team);
         }
 
-        public Team Create(TeamCreateRequest request, Player player)
+        public TeamDto Create(TeamCreateRequest request, Player player)
         {
-            if(player.isCaptain) throw new InvalidOperationException("No puedes crear mas de un equipo.");
+            if(player.isCaptain) throw new NotAllowedException("No puedes crear mas de un equipo.");
 
             Team team = new Team();
             team.Name = request.Name;
@@ -49,14 +51,16 @@ namespace Application.Services
 
             player.isCaptain = true;
             _playerRepository.Update(player);
-            return _teamRepository.Create(team);
+            var createdTeam = _teamRepository.Create(team);
+
+            return TeamDto.FromEntity(createdTeam);
 
         }
 
         public void Update(int id, TeamUpdateRequest request, int userId)
         {
             var team = _teamRepository.GetById(id) ?? throw new NotFoundException($"Team {id} not found");
-            if (team.CaptainId != userId) throw new InvalidOperationException("Acceso denegado.");
+            if (team.CaptainId != userId) throw new NotAllowedException("Acceso denegado.");
 
             team.Name = request.Name;
             team.Logo = request.Logo;
@@ -64,10 +68,12 @@ namespace Application.Services
             _teamRepository.Update(team);
         }
 
-        public void Delete(int id, int userId)
+        public void Delete(int id, Player authenticatedPlayer)
         {
             var team = _teamRepository.GetById(id) ?? throw new NotFoundException($"Team {id} not found");
-            if (team.CaptainId != userId) throw new InvalidOperationException("Acceso denegado.");
+            if (team.CaptainId != authenticatedPlayer.Id) throw new NotAllowedException("Acceso denegado.");
+            authenticatedPlayer.isCaptain = false;
+            _playerRepository.Update(authenticatedPlayer);
             _teamRepository.Delete(team);
         }
 
@@ -76,7 +82,7 @@ namespace Application.Services
             var team = _teamRepository.GetByJoinCode(code) ?? throw new NotFoundException($"Code {code} not found");
 
             if (team.Players.Contains(authenticatedPlayer))
-                throw new InvalidOperationException($"{authenticatedPlayer.Username} ya se encuentra en el partido");
+                throw new NotAllowedException($"{authenticatedPlayer.Username} ya se encuentra en el partido");
 
             team.Players.Add(authenticatedPlayer);
             _teamRepository.Update(team);
@@ -87,16 +93,18 @@ namespace Application.Services
             var team = _teamRepository.GetByJoinCode(code) ?? throw new NotFoundException($"Code {code} not found");
 
             if (!team.Players.Contains(player))
-                throw new InvalidOperationException($"{player.Username} no se encuentra en el partido");
+                throw new NotAllowedException($"{player.Username} no se encuentra en el partido");
 
             if (player.Id == team.CaptainId && player.Username == authenticatedPlayer.Username)
             {
-                Delete(player.Id, team.Id);
+                Delete(team.Id, authenticatedPlayer);
+                authenticatedPlayer.isCaptain = false;
+                _playerRepository.Update(player);
                 return;
             }
 
             if (player.Username != authenticatedPlayer.Username && authenticatedPlayer.Id != team.CaptainId)
-                throw new InvalidOperationException($"No puedes borrar a este usuario");
+                throw new NotAllowedException($"No puedes borrar a este usuario");
 
             team.Players.Remove(player);
             _teamRepository.Update(team);

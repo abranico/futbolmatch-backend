@@ -1,4 +1,5 @@
-﻿using Application.Models.Requests;
+﻿using Application.Models;
+using Application.Models.Requests;
 using Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -11,11 +12,11 @@ namespace Application.Interfaces
 {
     public interface ITeamService
     {
-        List<Team> GetAll();
-        Team? GetById(int id);
-        Team Create(TeamCreateRequest request, Player player);
+        List<TeamDto> GetAll();
+        TeamDto? GetById(int id);
+        TeamDto Create(TeamCreateRequest request, Player player);
         void Update(int id, TeamUpdateRequest request, int userId);
-        void Delete(int id, int userId);
+        void Delete(int id, Player authenticatedPlayer);
         void Join(Player player, string code);
         void Leave(Player authenticatedPlayer, Player player, string code);
     }
