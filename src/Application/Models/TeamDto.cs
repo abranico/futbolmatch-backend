@@ -19,5 +19,22 @@ namespace Application.Models
         public string City { get; set; }
         public int? LeagueId { get; set; }
         public string? Logo { get; set; }
+
+        public static TeamDto FromEntity(Team team)
+        {
+            return new TeamDto
+            {
+                Id = team.Id,
+                Name = team.Name,
+                CaptainId = team.CaptainId,
+                JoinCode = team.JoinCode,
+                Players = team.Players.Select(p => p.Username).ToList(),
+                Points = team.Points,
+                Country = team.Country,
+                City = team.City,
+                LeagueId = team.LeagueId,
+                Logo = team.Logo
+            };
+        }
     }
 }

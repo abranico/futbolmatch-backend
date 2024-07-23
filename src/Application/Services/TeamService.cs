@@ -26,7 +26,7 @@ namespace Application.Services
         }
         public List<TeamDto> GetAll()
         {
-            var teams = _teamRepository.GetAll();
+            var teams = _teamRepository.GetAll();       
             return teams.Select(TeamDto.FromEntity).ToList();
         }
 
@@ -50,6 +50,7 @@ namespace Application.Services
             team.JoinCode = CodeGenerator.GenerateRandomCode(18);
 
             player.isCaptain = true;
+            player.Teams.Add(team);
             _playerRepository.Update(player);
             var createdTeam = _teamRepository.Create(team);
 
@@ -85,6 +86,8 @@ namespace Application.Services
                 throw new NotAllowedException($"{authenticatedPlayer.Username} ya se encuentra en el partido");
 
             team.Players.Add(authenticatedPlayer);
+            authenticatedPlayer.Teams.Add(team);
+            _playerRepository.Update(authenticatedPlayer);
             _teamRepository.Update(team);
         }
 
@@ -107,6 +110,8 @@ namespace Application.Services
                 throw new NotAllowedException($"No puedes borrar a este usuario");
 
             team.Players.Remove(player);
+            player.Teams.Remove(team);
+            _playerRepository.Update(player);
             _teamRepository.Update(team);
         }
 

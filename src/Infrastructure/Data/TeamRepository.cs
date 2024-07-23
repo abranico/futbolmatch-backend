@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Data
 {
@@ -21,5 +22,11 @@ namespace Infrastructure.Data
         {
             return _context.Teams.SingleOrDefault(u => u.JoinCode == code);
         }
+
+        public override List<Team> GetAll()
+        {
+            return _context.Teams.Include(t => t.Players).ToList(); 
+        }
+
     }
 }
