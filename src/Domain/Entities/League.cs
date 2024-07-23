@@ -16,7 +16,7 @@ namespace Domain.Entities
         public string? Logo { get; set; }
         public string Country { get; set; }
         public string City { get; set; }
-        public int AdminId { get; set; }
+        public Player Admin { get; set; }
         public MatchFormat MatchFormat { get; set; }
 
     }

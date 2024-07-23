@@ -8,9 +8,9 @@ namespace Domain.Entities
 {
     public class CasualMatch : Match
     {
-        public int Admin {  get; set; }
+        public Player Admin {  get; set; }
         public string JoinCode {  get; set; }
-        public List<string> Players { get; set; } = new List<string>();
+        public List<Player> Players { get; set; } = new List<Player>();
         public bool Open { get; set; } = true;
     }
 }
