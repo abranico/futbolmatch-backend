@@ -51,8 +51,8 @@ namespace Web.Controllers
             try
             {
                 int userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "");
-                Player? player = _playerService.GetById(userId);
-                var obj = _teamService.Create(request, player);
+                Player? authenticatedPlayer = _playerService.GetById(userId);
+                var obj = _teamService.Create(request, authenticatedPlayer);
                 return CreatedAtAction(nameof(GetById), new { id = obj.Id }, obj);
             }
             catch (NotAllowedException ex)
@@ -89,7 +89,7 @@ namespace Web.Controllers
                 return NoContent();
 
             }
-            catch (NotFoundException ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }

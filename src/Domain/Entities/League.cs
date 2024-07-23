@@ -17,6 +17,7 @@ namespace Domain.Entities
         public string Country { get; set; }
         public string City { get; set; }
         public Player Admin { get; set; }
+        public ICollection<Team> Teams { get; set; } = new List<Team>();
         public MatchFormat MatchFormat { get; set; }
 
     }

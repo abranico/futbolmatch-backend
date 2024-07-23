@@ -72,7 +72,7 @@ namespace Application.Services
         public void Delete(int id, Player authenticatedPlayer)
         {
             var team = _teamRepository.GetById(id) ?? throw new NotFoundException($"Team {id} not found");
-            if (team.CaptainId != authenticatedPlayer.Id) throw new NotAllowedException("Acceso denegado.");
+            if (team.Captain.Id != authenticatedPlayer.Id) throw new NotAllowedException("Acceso denegado.");
             authenticatedPlayer.isCaptain = false;
             _playerRepository.Update(authenticatedPlayer);
             _teamRepository.Delete(team);
@@ -106,7 +106,7 @@ namespace Application.Services
                 return;
             }
 
-            if (player.Username != authenticatedPlayer.Username && authenticatedPlayer.Id != team.CaptainId)
+            if (player.Username != authenticatedPlayer.Username && authenticatedPlayer.Id != team.Captain.Id)
                 throw new NotAllowedException($"No puedes borrar a este usuario");
 
             team.Players.Remove(player);

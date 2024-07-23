@@ -17,7 +17,7 @@ namespace Application.Models
         public int Points { get; set; } = 0;
         public string Country { get; set; }
         public string City { get; set; }
-        public int? LeagueId { get; set; }
+        public string League { get; set; }
         public string? Logo { get; set; }
 
         public static TeamDto FromEntity(Team team)
@@ -32,7 +32,7 @@ namespace Application.Models
                 Points = team.Points,
                 Country = team.Country,
                 City = team.City,
-                LeagueId = team.LeagueId,
+                League = team.League?.Name ?? "",
                 Logo = team.Logo
             };
         }

@@ -3,6 +3,7 @@ using Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -18,6 +19,7 @@ namespace Application.Models
         public string Country { get; set; }
         public string City { get; set; }
         public string Admin { get; set; }
+        public List<string> Teams { get; set; }
         public string MatchFormat { get; set; }
 
         public static LeagueDto FromEntity(League league)
@@ -32,6 +34,7 @@ namespace Application.Models
                 Country = league.Country,
                 City = league.City,
                 Admin = league.Admin.Username,
+                Teams = league.Teams.Select(p => p.Name).ToList(),
                 MatchFormat = league.MatchFormat.ToString()
             };
         }

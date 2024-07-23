@@ -67,8 +67,8 @@ namespace Web.Controllers
         public IActionResult Create([FromBody] CasualMatchCreateRequest request)
         {
             int userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "");
-            Player? player = _playerService.GetById(userId);
-            var obj = _casualMatchService.Create(request, player);
+            Player? authenticatedPlayer = _playerService.GetById(userId);
+            var obj = _casualMatchService.Create(request, authenticatedPlayer);
             return CreatedAtAction(nameof(GetById), new { id = obj.Id }, obj);
         }
 
@@ -78,11 +78,13 @@ namespace Web.Controllers
         {
             try
             {
-                _casualMatchService.Delete(id);
+                int userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "");
+                Player? authenticatedPlayer = _playerService.GetById(userId);
+                _casualMatchService.Delete(id, authenticatedPlayer);
                 return NoContent();
 
             }
-            catch (NotFoundException ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -93,8 +95,9 @@ namespace Web.Controllers
         {
             try
             {
-                string username = User.Claims.FirstOrDefault(c => c.Type == "username")?.Value;
-                _casualMatchService.Join(username, code);
+                int userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "");
+                Player? authenticatedPlayer = _playerService.GetById(userId);
+                _casualMatchService.Join(authenticatedPlayer, code);
                 return NoContent();
             }
             catch (Exception ex)
@@ -111,8 +114,9 @@ namespace Web.Controllers
             try
             {
                 int userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "");
-                Player? player = _playerService.GetById(userId);
-                _casualMatchService.Leave(player, username, code);
+                Player? authenticatedPlayer = _playerService.GetById(userId);
+                Player? player = _playerService.GetByUsername(username);
+                _casualMatchService.Leave(authenticatedPlayer, player, code);
                 return NoContent();
             }
             catch (Exception ex)

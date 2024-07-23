@@ -1,4 +1,5 @@
-﻿using Application.Models.Requests;
+﻿using Application.Models;
+using Application.Models.Requests;
 using Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -10,12 +11,13 @@ namespace Application.Interfaces
 {
     public interface ILeagueService
     {
-        List<League> GetAll();
-        League? GetById(int id);
-        League? GetByJoinCode(string code);
-        League Create(LeagueCreateRequest request, Player player);
+        List<LeagueDto> GetAll();
+        LeagueDto? GetById(int id);
+        LeagueDto? GetByJoinCode(string code);
+        LeagueDto Create(LeagueCreateRequest request, Player player);
         void Update(int id, LeagueUpdateRequest request, int userId);
         void Delete(int id, int userId);
-        void Join(int id, string code, int userId);
+        void Join(Player authenticatedPlayer, string code, int teamId);
+        void Leave(Player authenticatedPlayer, int teamId);
     }
 }

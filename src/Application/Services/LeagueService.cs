@@ -1,4 +1,5 @@
 ﻿using Application.Interfaces;
+using Application.Models;
 using Application.Models.Requests;
 using Domain.Entities;
 using Domain.Exceptions;
@@ -16,44 +17,47 @@ namespace Application.Services
             _leagueRepository = leagueRepository;
             _teamRepository = teamRepository;
         }
-        public List<League> GetAll()
+        public List<LeagueDto> GetAll()
         {
-            return _leagueRepository.GetAll();
+            var leagues = _leagueRepository.GetAll();
+            return leagues.Select(LeagueDto.FromEntity).ToList();
         }
 
-        public League? GetById(int id)
+        public LeagueDto? GetById(int id)
         {
             var league = _leagueRepository.GetById(id) ?? throw new NotFoundException($"League {id} not found");
-            return league;
+            return LeagueDto.FromEntity(league);
         }
 
-        public League? GetByJoinCode(string code)
+        public LeagueDto? GetByJoinCode(string code)
         {
             var league = _leagueRepository.GetByJoinCode(code) ?? throw new NotFoundException($"Code {code} not found");
-            return league;
+            return LeagueDto.FromEntity(league);
         }
 
-        public League Create(LeagueCreateRequest request, Player player)
+        public LeagueDto Create(LeagueCreateRequest request, Player authenticatedPlayer)
         {
-            if(!player.IsPremium) throw new InvalidOperationException("Acceso denegado");
+            if(!authenticatedPlayer.IsPremium) throw new InvalidOperationException("Acceso denegado");
             
             League league = new League();
             league.JoinCode = CodeGenerator.GenerateRandomCode(18);
             league.Name = request.Name;
             league.Description = request.Description;
             league.Logo = request.Logo;
-            league.Country = player.Country;
-            league.City = player.City;
-            league.AdminId = player.Id;
+            league.Country = authenticatedPlayer.Country;
+            league.City = authenticatedPlayer.City;
+            league.Admin = authenticatedPlayer;
             league.MatchFormat = request.MatchFormat;
-            return _leagueRepository.Create(league);
+
+            var createdLeague = _leagueRepository.Create(league);
+            return LeagueDto.FromEntity(createdLeague);
 
         }
 
         public void Update(int id, LeagueUpdateRequest request, int userId)
         {
             var league = _leagueRepository.GetById(id) ?? throw new NotFoundException($"League {id} not found");
-            if(league.AdminId != userId) throw new InvalidOperationException("Acceso denegado");
+            if(league.Admin.Id != userId) throw new InvalidOperationException("Acceso denegado");
             league.Name = request.Name;
             league.Description = request.Description;
             league.Logo = request.Logo;
@@ -64,20 +68,50 @@ namespace Application.Services
         public void Delete(int id, int userId)
         {
             var league = _leagueRepository.GetById(id) ?? throw new NotFoundException($"League {id} not found");
-            if (league.AdminId != userId) throw new InvalidOperationException("Acceso denegado");
+            if (league.Admin.Id != userId) throw new InvalidOperationException("Acceso denegado");
             _leagueRepository.Delete(league);
         }
 
-        public void Join(int id, string code, int userId)
+        public void Join(Player authenticatedPlayer, string code, int teamId)
         {
-            Team team = _teamRepository.GetById(id) ?? throw new NotFoundException($"Team {id} not found");
-            if (team.CaptainId != userId) throw new InvalidOperationException("Acceso denegado.");
+            Team team = _teamRepository.GetById(teamId) ?? throw new NotFoundException($"Team {teamId} not found");
+            if(team.Captain.Id != authenticatedPlayer.Id) throw new InvalidOperationException("Acceso denegado");
 
-            League league = GetByJoinCode(code) ?? throw new NotFoundException($"Code {code} is not valid");
+            League league = _leagueRepository.GetByJoinCode(code) ?? throw new NotFoundException($"Code {code} is not valid");
 
-            team.LeagueId = league.Id;
+            team.League = league;
+            league.Teams.Add(team);
 
             _teamRepository.Update(team);
+            _leagueRepository.Update(league);
+        }
+
+        public void Leave(Player authenticatedPlayer, int teamId)
+        {
+            Team team = _teamRepository.GetById(teamId) ?? throw new NotFoundException($"Team {teamId} not found");
+
+            League league = team.League ?? throw new NotFoundException("Este equipo no forma parte de una liga");
+
+            if (team.Captain.Id == authenticatedPlayer.Id)
+            {
+                team.League = null;
+                league.Teams.Remove(team);
+
+                _teamRepository.Update(team);
+                _leagueRepository.Update(league);
+            }
+            else if (league.Admin.Id == authenticatedPlayer.Id)
+            {
+                team.League = null;
+                league.Teams.Remove(team);
+
+                _teamRepository.Update(team);
+                _leagueRepository.Update(league);
+            }
+            else
+            {
+                throw new InvalidOperationException("Acceso denegado");
+            }
         }
     }
 }

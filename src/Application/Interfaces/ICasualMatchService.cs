@@ -1,4 +1,5 @@
-﻿using Application.Models.Requests;
+﻿using Application.Models;
+using Application.Models.Requests;
 using Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -10,12 +11,12 @@ namespace Application.Interfaces
 {
     public interface ICasualMatchService
     {
-        List<CasualMatch> GetAll();
-        CasualMatch? GetById(int id);
-        CasualMatch? GetByJoinCode(string code);
-        CasualMatch Create(CasualMatchCreateRequest request, Player player);
+        List<CasualMatchDto> GetAll();
+        CasualMatchDto? GetById(int id);
+        CasualMatchDto? GetByJoinCode(string code);
+        CasualMatchDto Create(CasualMatchCreateRequest request, Player player);
         void Delete(int id, Player authenticatedPlayer);
-        void Join(string username, string code);
-        void Leave(Player player, string username, string code);
+        void Join(Player authenticatedPlayer, string code);
+        void Leave(Player authenticatedPlayer, Player player, string code);
     }
 }

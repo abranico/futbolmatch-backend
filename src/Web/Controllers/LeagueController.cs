@@ -84,7 +84,7 @@ namespace Web.Controllers
                 return NoContent();
 
             }
-            catch (NotFoundException ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -100,23 +100,40 @@ namespace Web.Controllers
                 return NoContent();
 
             }
-            catch (NotFoundException ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
         }
 
         [HttpPost("[action]/{id}")]
-        public IActionResult Join([FromRoute] int id, [FromBody] string code)
+        public IActionResult Join([FromBody] LeagueJoinRequest request)
         {
             try
             {
                 int userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "");
-                _leagueService.Join(id, code, userId);
+                Player? authenticatedPlayer = _playerService.GetById(userId);
+                _leagueService.Join(authenticatedPlayer, request.Code, request.TeamId);
                 return NoContent();
 
             }
-            catch (NotFoundException ex)
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("[action]")]
+        public IActionResult Leave([FromBody] int teamId)
+        {
+            try
+            {
+                int userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "");
+                Player? authenticatedPlayer = _playerService.GetById(userId);
+                _leagueService.Leave(authenticatedPlayer, teamId);
+                return NoContent();
+            }
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }

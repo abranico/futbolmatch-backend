@@ -35,15 +35,11 @@ namespace Infrastructure.Data
                 .ToTable("PlayersTeams")
                 );
 
-            modelBuilder
-                .Entity<User>()
-                .Property(d => d.Gender)
-                .HasConversion(new EnumToStringConverter<Gender>());
+            modelBuilder.Entity<Team>()
+            .HasOne(t => t.Captain)
+            .WithMany()
+            .HasForeignKey("CaptainId"); 
 
-            modelBuilder
-                .Entity<User>()
-                .Property(d => d.Gender)
-                .HasConversion(new EnumToStringConverter<Gender>());
 
             modelBuilder.Entity<CasualMatch>()
                .HasIndex(cm => cm.JoinCode)
