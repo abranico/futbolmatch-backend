@@ -69,7 +69,7 @@ namespace Web.Controllers
             int userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "");
             Player? player = _playerService.GetById(userId);
             var obj = _casualMatchService.Create(request, player);
-            return CreatedAtAction(nameof(GetByJoinCode), new { code = obj.JoinCode }, obj);
+            return CreatedAtAction(nameof(GetById), new { id = obj.Id }, obj);
         }
 
         

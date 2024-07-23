@@ -26,6 +26,12 @@ namespace Application.Services
             return _casualMatchRepository.GetAll();
         }
 
+        public CasualMatch? GetById(int id)
+        {
+            var match = _casualMatchRepository.GetById(id) ?? throw new NotFoundException($"Match {id} not found");
+            return match;
+        }
+
         public CasualMatch? GetByJoinCode(string code)
         {
             var match = _casualMatchRepository.GetByJoinCode(code) ?? throw new NotFoundException($"Code {code} not found");
