@@ -65,10 +65,10 @@ Estas entidades se implementan utilizando clases abstractas para facilitar la he
 
 ## Screenshot
 
-<p float="left" >
-  <img src="https://github.com/user-attachments/assets/f108afff-a5c2-412a-8406-499ac02c2331" width="" />
-  <img src="https://github.com/user-attachments/assets/49633f3c-b95e-4c45-9e32-f979f4ce69fc" width=""  />
-</p>
+![image](https://github.com/user-attachments/assets/73088747-b623-41ef-a832-d66aeace8441)
+![image](https://github.com/user-attachments/assets/7721cac7-ea01-4c92-9a1d-428a927fe995)
+
+
 
 
 
