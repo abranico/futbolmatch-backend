@@ -71,7 +71,7 @@ namespace Web.Controllers
                 return NoContent();
 
             }
-            catch (NotFoundException ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
