@@ -35,8 +35,11 @@ namespace Infrastructure.Data
             if (id is int intId)
             {
                 return _context.Players
-                        .Include(m => m.Teams)
-                        .FirstOrDefault(m => m.Id == intId);
+                    .Include(p => p.Teams) // Incluye los equipos.
+                        .ThenInclude(t => t.Captain) // Incluye el capitán de cada equipo.
+                    .Include(p => p.Teams) // Incluye los equipos nuevamente.
+                        .ThenInclude(t => t.Players) // Incluye los jugadores de cada equipo.
+                    .FirstOrDefault(p => p.Id == intId); // Filtra por ID.
             }
             throw new ArgumentException("Tipo de ID no compatible.");
         }
