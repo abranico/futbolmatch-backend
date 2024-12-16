@@ -18,6 +18,7 @@ namespace Application.Interfaces
         void Update(int id, PlayerUpdateRequest request, int userId);
         void Delete(int id, int userId);
         void PurchasePremium(int userId, PurchasePremiumRequest request);
+        List<TeamDto> GetTeam(int userId);
 
 
     }

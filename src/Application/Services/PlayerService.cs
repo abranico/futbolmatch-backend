@@ -97,6 +97,14 @@ namespace Application.Services
             
         }
 
+        public List<TeamDto> GetTeam(int userId)
+        {
+            var player = _playerRepository.GetById(userId);
+            if (player == null) throw new NotFoundException("Jugador no encontrado.");
+
+            if (player.Teams.Count == 0) throw new NotFoundException("No estas anotado en ningun equipo.");
+            return player.Teams.Select(TeamDto.FromEntity).ToList();
+        }
 
 
 

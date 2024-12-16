@@ -21,7 +21,9 @@ namespace Application.Models.Requests
         public Gender Gender { get; set; }
         public Role Role { get; set; }
         public string PhoneNumber { get; set; }
+
         
+
     }
 
 }

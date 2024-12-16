@@ -91,7 +91,7 @@ namespace Application.Services
             var team = _teamRepository.GetByJoinCode(code) ?? throw new NotFoundException($"Code {code} not found");
 
             if (team.Players.Contains(authenticatedPlayer))
-                throw new NotAllowedException($"{authenticatedPlayer.Username} ya se encuentra en el partido");
+                throw new NotAllowedException($"{authenticatedPlayer.Username} ya se encuentra en el equipo");
 
             team.Players.Add(authenticatedPlayer);
             authenticatedPlayer.Teams.Add(team);
@@ -107,7 +107,7 @@ namespace Application.Services
             var team = _teamRepository.GetByJoinCode(code) ?? throw new NotFoundException($"Code {code} not found");
 
             if (!team.Players.Contains(player))
-                throw new NotAllowedException($"{player.Username} no se encuentra en el partido");
+                throw new NotAllowedException($"{player.Username} no se encuentra en el equipo");
 
             if (player.Id == team.Captain.Id && player.Username == authenticatedPlayer.Username)
             {
@@ -125,6 +125,8 @@ namespace Application.Services
             _playerRepository.Update(player);
             _teamRepository.Update(team);
         }
+
+        
 
     }
 }
