@@ -113,6 +113,23 @@ namespace Web.Controllers
             
         }
 
+        [HttpGet("MyTeam")]
+        public IActionResult GetTeam()
+        {
+
+            int userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "");
+            try
+            {
+                return Ok(_playerService.GetTeam(userId));
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
+
+
+        
         
     }
 }
