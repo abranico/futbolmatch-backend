@@ -56,7 +56,7 @@ namespace Application.Services
             // Validar que los equipos no son el mismo
             if (homeTeam.Id == awayTeam.Id)
             {
-                throw new InvalidOperationException("Los equipos no pertenecen a la misma liga");
+                throw new InvalidOperationException("Los equipos son los mismos.");
             }
 
             CompetitiveMatch match = new CompetitiveMatch();

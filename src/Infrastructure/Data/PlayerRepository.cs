@@ -39,7 +39,10 @@ namespace Infrastructure.Data
                         .ThenInclude(t => t.Captain) // Incluye el capitán de cada equipo.
                     .Include(p => p.Teams) // Incluye los equipos nuevamente.
                         .ThenInclude(t => t.Players) // Incluye los jugadores de cada equipo.
+                    .Include(p=> p.Teams)
+                        .ThenInclude(t=> t.League)
                     .FirstOrDefault(p => p.Id == intId); // Filtra por ID.
+                    
             }
             throw new ArgumentException("Tipo de ID no compatible.");
         }
