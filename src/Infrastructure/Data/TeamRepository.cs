@@ -59,12 +59,12 @@ namespace Infrastructure.Data
 
             if (existingTeam != null)
             {
-                // Si existe, usar Attach para evitar el problema de duplicación
+                
                 _context.Set<Team>().Attach(entity);
             }
             else
             {
-                // Si no existe, añadir la nueva entidad
+                
                 _context.Set<Team>().Add(entity);
             }
 
